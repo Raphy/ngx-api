@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -34,7 +34,7 @@ export class UserViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('user')) {
-            return this.userApiService.findItem(params['user']);
+            return this.userApiService.findItem(params.user);
           }
 
           return of(null);
@@ -49,9 +49,9 @@ export class UserViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateFragmentForActiveTab(ngbTabChangeEvent: NgbTabChangeEvent) {
-    if (ngbTabChangeEvent.activeId) {
-      this.router.navigate([], {fragment: ngbTabChangeEvent.activeId});
+  updateFragmentForActiveTab(activeId: string): void {
+    if (activeId) {
+      this.router.navigate([], {fragment: activeId});
     }
   }
 }

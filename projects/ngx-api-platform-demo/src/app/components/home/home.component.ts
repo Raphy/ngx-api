@@ -67,7 +67,7 @@ export class UserComponent implements OnInit, OnDestroy {
   <p>{{ post.title }}</p>
 </div>
 `
-  }
+  };
 
 
   constructor() { }

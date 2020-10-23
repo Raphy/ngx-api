@@ -34,7 +34,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('post')) {
-            return this.postApiService.findItem(params['post']);
+            return this.postApiService.findItem(params.post);
           }
 
           return of(null);
@@ -49,9 +49,9 @@ export class PostViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateFragmentForActiveTab(ngbTabChangeEvent: NgbTabChangeEvent) {
-    if (ngbTabChangeEvent.activeId) {
-      this.router.navigate([], {fragment: ngbTabChangeEvent.activeId});
+  updateFragmentForActiveTab(activeId: string): void {
+    if (activeId) {
+      this.router.navigate([], {fragment: activeId});
     }
   }
 }

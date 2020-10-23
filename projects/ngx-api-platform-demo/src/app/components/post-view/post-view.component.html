@@ -28,9 +28,10 @@
         </div>
       </div>
 
-      <ngb-tabset [activeId]="activateTabId" [destroyOnHide]="false" (tabChange)="updateFragmentForActiveTab($event)">
-        <ngb-tab id="comments" title="Comments">
-          <ng-template ngbTabContent>
+      <ul ngbNav #subCollectionsNav="ngbNav"  [activeId]="activateTabId" (activeIdChange)="updateFragmentForActiveTab($event)" class="nav-tabs">
+        <li ngbNavItem="comments">
+          <a ngbNavLink>Comments</a>
+          <ng-template ngbNavContent>
 
             <table class="table table-bordered table-hover mt-3">
               <thead>
@@ -52,10 +53,10 @@
             </table>
 
           </ng-template>
-        </ngb-tab>
+        </li>
 
-      </ngb-tabset>
-
+      </ul>
+      <div [ngbNavOutlet]="subCollectionsNav"></div>
     </div>
   </div>
 </div>

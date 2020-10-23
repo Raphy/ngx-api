@@ -1,11 +1,10 @@
-import { registerLocaleData } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FaConfig, FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { NgbTabsetModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { ApiPlatformModule } from 'ngx-api-platform';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -53,7 +52,7 @@ import { HomeComponent } from './components/home/home.component';
       ],
     }),
     FontAwesomeModule,
-    NgbTabsetModule,
+    NgbNavModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

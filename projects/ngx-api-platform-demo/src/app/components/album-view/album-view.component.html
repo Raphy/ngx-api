@@ -21,9 +21,10 @@
         </div>
       </div>
 
-      <ngb-tabset [activeId]="activateTabId" [destroyOnHide]="false" (tabChange)="updateFragmentForActiveTab($event)">
-        <ngb-tab id="photos" title="Photos">
-          <ng-template ngbTabContent>
+      <ul ngbNav #subCollectionsNav="ngbNav" [activeId]="activateTabId" (activeIdChange)="updateFragmentForActiveTab($event)" class="nav-tabs">
+        <li ngbNavItem="albums">
+          <a ngbNavLink>Albums</a>
+          <ng-template ngbNavContent>
 
             <div class="row row-cols-6 mt-3">
               <div *ngFor="let photo of (album?.photos | async)" class="col text-center mb-3">
@@ -32,10 +33,10 @@
             </div>
 
           </ng-template>
-        </ngb-tab>
+        </li>
 
-      </ngb-tabset>
-
+      </ul>
+      <div [ngbNavOutlet]="subCollectionsNav"></div>
     </div>
   </div>
 </div>
