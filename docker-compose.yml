@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+    app:
+        build:
+            context: .
+        container_name: gambling-apps.demo.app
+        user: ${DOCKER_USER}
+        labels:
+            traefik.enable: true
+            traefik.docker.network: traefik
+            traefik.http.middlewares.http-to-https-redirect.redirectscheme.scheme: https
+            traefik.http.services.gambling-apps-demo.loadbalancer.server.port: 4000
+            traefik.http.routers.gambling-apps-demo-http.entrypoints: http
+            traefik.http.routers.gambling-apps-demo-http.rule: Host(`${DOCKER_TRAEFIK_ADMIN_HOST}`)
+            traefik.http.routers.gambling-apps-demo-http.middlewares: http-to-https-redirect
+            traefik.http.routers.gambling-apps-demo-https.entrypoints: https
+            traefik.http.routers.gambling-apps-demo-https.rule: Host(`${DOCKER_TRAEFIK_ADMIN_HOST}`)
+            traefik.http.routers.gambling-apps-demo-https.tls: true
+            traefik.http.routers.gambling-apps-demo-https.service: gambling-apps-demo
+        networks:
+            - traefik
+            - organization
+        environment:
+            NODE_ENV: development
+            NODE_TLS_REJECT_UNAUTHORIZED: 0
+        volumes:
+            - .:/usr/src/app
+        working_dir: /usr/src/app
+        command: sh -c 'yarn install && yarn ng serve ngx-api-platform-demo --host 0.0.0.0 --port 4000 --public-host ${DOCKER_TRAEFIK_ADMIN_HOST}'
+
+networks:
+    traefik:
+        external:
+            name: ${DOCKER_TRAEFIK_NETWORK_NAME}
+
+    organization:
+        external:
+            name: ${DOCKER_TRAEFIK_ORGANIZATION_NETWORK_NAME}
