@@ -37,7 +37,7 @@ export function assertSubCollectionIsNotProperty(ResourceClass: Function): void 
   }
 
   const propertiesMetadata: { [propertyName: string]: PropertyMetadata } = Reflect.getMetadata(MetadataKey.Properties, ResourceClass);
-  for(const propertyName in subCollectionsMetadata) {
+  for (const propertyName in subCollectionsMetadata) {
     if (propertiesMetadata.hasOwnProperty(propertyName)) {
       throw new Error(`The resource "${ResourceClass.name}" have the property "${ propertyName }" decorated with Property() and SubCollection() decorators and it's not allowed.`);
     }
@@ -54,7 +54,7 @@ export function assertSubResourceIsProperty(ResourceClass: Function): void {
   }
 
   const propertiesMetadata: { [propertyName: string]: PropertyMetadata } = Reflect.getMetadata(MetadataKey.Properties, ResourceClass);
-  for(const propertyName in subResourcesMetadata) {
+  for (const propertyName in subResourcesMetadata) {
     if (!propertiesMetadata.hasOwnProperty(propertyName)) {
       throw new Error(`The resource "${ResourceClass.name}" have the property "${ propertyName }" decorated with SubResource() decorator but the Property() decorators is missing and required.`);
     }

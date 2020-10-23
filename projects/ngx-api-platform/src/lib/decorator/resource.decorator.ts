@@ -30,7 +30,7 @@ export function Resource(endpointOrOptions: string | ResourceOptions, maybeOptio
 
     const metadata: ResourceMetadata = {
       class: ResourceClass,
-      options: options,
+      options,
     };
 
     Reflect.defineMetadata(MetadataKey.Resource, metadata, ResourceClass);

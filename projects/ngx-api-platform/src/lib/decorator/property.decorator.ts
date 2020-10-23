@@ -43,7 +43,7 @@ export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions 
 
     const metadata: PropertyMetadata = {
       class: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: options || {},
     };
 

@@ -35,7 +35,7 @@ export function SubResource(SubResourceClassOrOptions?: (() => Function) | SubRe
 
     const metadata: SubResourceMetadata = {
       class: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: options || {},
     };
 

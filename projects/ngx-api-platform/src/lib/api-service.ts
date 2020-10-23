@@ -89,7 +89,12 @@ export class ApiService<TResource extends Object> {
       .pipe(
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
         map((response: HttpResponse<any>) => response.body as object),
-        switchMap((collectionData: object) => forkJoin(...(collectionData['hydra:member'] || collectionData).map((resourceData: object) => this.deserializeResource(resourceData))) as Observable<Array<TResource>>),
+        switchMap((collectionData: object) => forkJoin(
+          ...(collectionData['hydra:member'] || collectionData)
+            .map(
+              (resourceData: object) => this.deserializeResource(resourceData),
+            ),
+        ) as Observable<Array<TResource>>),
         share(),
       )
       ;
@@ -168,7 +173,10 @@ export class ApiService<TResource extends Object> {
           for (const propertyName in this.subResourcesMetadata) {
             if (this.propertiesMetadata[propertyName].options.input && !!resource[propertyName]) {
               subResourcesObservables.push(
-                resource[propertyName].pipe(map((subResource) => object[this.propertiesMetadata[propertyName].options.name] = resourceIri(subResource))),
+                resource[propertyName]
+                  .pipe(
+                    map((subResource) => object[this.propertiesMetadata[propertyName].options.name] = resourceIri(subResource)),
+                  ),
               );
             }
           }
@@ -193,7 +201,11 @@ export class ApiService<TResource extends Object> {
         const subResourceApiService: ApiService<any> = this.injector.get(ApiServiceTokenFor(subResourceMetadata.options.SubResourceClass()));
         resource[subResourceMetadata.propertyName] = subResourceApiService.findItem(
           object[this.propertiesMetadata[propertyName].options.name],
-          subResourceMetadata.options.apiServiceItemOptions ? (typeof subResourceMetadata.options.apiServiceItemOptions === 'object' ? subResourceMetadata.options.apiServiceItemOptions : subResourceMetadata.options.apiServiceItemOptions(resource)) : {},
+          subResourceMetadata.options.apiServiceItemOptions
+            ? (typeof subResourceMetadata.options.apiServiceItemOptions === 'object'
+            ? subResourceMetadata.options.apiServiceItemOptions
+            : subResourceMetadata.options.apiServiceItemOptions(resource))
+            : {},
         );
       }
 
@@ -202,10 +214,16 @@ export class ApiService<TResource extends Object> {
     for (const propertyName in this.subCollectionsMetadata) {
       const subCollectionMetadata: SubCollectionMetadata = this.subCollectionsMetadata[propertyName];
 
-      const subResourceApiService: ApiService<any> = this.injector.get(ApiServiceTokenFor(subCollectionMetadata.options.SubResourceClass()));
+      const subResourceApiService: ApiService<any> = this.injector.get(
+        ApiServiceTokenFor(subCollectionMetadata.options.SubResourceClass())
+      );
       resource[subCollectionMetadata.propertyName] = subResourceApiService.findCollection(
         {
-          ...(subCollectionMetadata.options.apiServiceCollectionOptions ? (typeof subCollectionMetadata.options.apiServiceCollectionOptions === 'object' ? subCollectionMetadata.options.apiServiceCollectionOptions : subCollectionMetadata.options.apiServiceCollectionOptions(resource)) : {}),
+          ...(subCollectionMetadata.options.apiServiceCollectionOptions
+            ? (typeof subCollectionMetadata.options.apiServiceCollectionOptions === 'object'
+              ? subCollectionMetadata.options.apiServiceCollectionOptions
+              : subCollectionMetadata.options.apiServiceCollectionOptions(resource))
+            : {}),
           endpoint: `/${ this.resourceMetadata.options.endpoint }/${ resource[this.resourceMetadata.options.identifierPropertyName] }/${ subCollectionMetadata.options.subEndpoint }`,
         },
       );

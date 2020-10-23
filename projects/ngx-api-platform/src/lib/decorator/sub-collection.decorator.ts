@@ -36,7 +36,7 @@ export function SubCollection(SubResourceClassOrOptions?: (() => Function) | Sub
 
     const metadata: SubCollectionMetadata = {
       class: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: options || {},
     };
 

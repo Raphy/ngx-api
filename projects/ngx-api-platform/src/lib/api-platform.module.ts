@@ -5,6 +5,26 @@ import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { ApiService, ApiServiceTokenFor } from './api-service';
 import { API_PLATFORM_SERIALIZERS, DateSerializer, NativeSerializer, ResourceSerializer } from './serializer';
 
+function getApiServiceProviders(config: ApiPlatformConfig): Array<Provider> {
+  return config.resources.map((ResourceClass: Function) => (
+    {
+      provide: ApiServiceTokenFor(ResourceClass),
+      useFactory: (
+        config: ApiPlatformConfig,
+        httpClient: HttpClient,
+        resourceSerializer: ResourceSerializer,
+        injector: Injector,
+      ) => new ApiService(ResourceClass, config, httpClient, resourceSerializer, injector),
+      deps: [
+        API_PLATFORM_CONFIG,
+        HttpClient,
+        ResourceSerializer,
+        Injector,
+      ],
+    }
+  ));
+}
+
 @NgModule({
   declarations: [],
   imports: [
@@ -32,24 +52,6 @@ import { API_PLATFORM_SERIALIZERS, DateSerializer, NativeSerializer, ResourceSer
 })
 export class ApiPlatformModule {
   static forRoot(config: ApiPlatformConfig): ModuleWithProviders<ApiPlatformModule> {
-    const apiServiceProviders: Provider[] = config.resources.map((ResourceClass: Function) => (
-      {
-        provide: ApiServiceTokenFor(ResourceClass),
-        useFactory: (
-          config: ApiPlatformConfig,
-          httpClient: HttpClient,
-          resourceSerializer: ResourceSerializer,
-          injector: Injector,
-        ) => new ApiService(ResourceClass, config, httpClient, resourceSerializer, injector),
-        deps: [
-          API_PLATFORM_CONFIG,
-          HttpClient,
-          ResourceSerializer,
-          Injector,
-        ],
-      }
-    ));
-
     return {
       ngModule: ApiPlatformModule,
       providers: [
@@ -57,7 +59,7 @@ export class ApiPlatformModule {
           provide: API_PLATFORM_CONFIG,
           useValue: config,
         },
-        ...apiServiceProviders,
+        ...getApiServiceProviders(config),
       ],
     };
   }
