@@ -1,0 +1,38 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+    <li class="breadcrumb-item active">Albums</li>
+  </ol>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+      <h1>Albums</h1>
+
+      <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Title</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let album of albums">
+          <th scope="row">{{ album.id }}</th>
+          <td>{{ album.title }}</td>
+          <td>
+            <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id]">
+              <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+              View
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
