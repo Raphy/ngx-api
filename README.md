@@ -1,27 +1,32 @@
 # NgxApiPlatform
+NgxApiPlatform is an Angular library to ease the API consumption.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
+# Demo
+A demonstration application is available at https://raphy.github.io/ngx-api-platform/
 
-## Development server
+# Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## With Angular Schematics
+Just run the following command:
 
-## Code scaffolding
+```
+ng add ngx-api-platform
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Manual
+Run the following command:
+```
+yarn add ngx-api-platform
+# or
+npm install ngx-api-platform
+```
 
-## Build
+Then import the `ApiPlatformModule` in your `AppModule`:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```
+ApiPlatformModule.forRoot({
+  apiBaseUrl: 'https://api.awesome-app.tld', // Set the API base URL where NgxApiPlatfom should request
+  resources: [User, Post, ProfilePhoto], // Set the mapped resources
+})
+```
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.

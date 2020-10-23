@@ -122,8 +122,7 @@
           "options": {
             "tsConfig": [
               "projects/ngx-api-platform-demo/tsconfig.app.json",
-              "projects/ngx-api-platform-demo/tsconfig.spec.json",
-              "projects/ngx-api-platform-demo/e2e/tsconfig.json"
+              "projects/ngx-api-platform-demo/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
