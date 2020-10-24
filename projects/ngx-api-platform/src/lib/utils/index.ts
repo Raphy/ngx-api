@@ -1,2 +1,1 @@
-export * from './iri';
-export * from './metadata-assert';
+export * from './metadata';

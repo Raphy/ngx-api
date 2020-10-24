@@ -1,8 +1,9 @@
 import { SubResourceOptions } from '../options';
+import { ResourceClass } from '../types';
 
 export interface SubResourceMetadata
 {
-  class: Function;
+  Class: ResourceClass;
 
   propertyName: string;
 

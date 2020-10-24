@@ -1,8 +1,9 @@
 import { PropertyOptions } from '../options';
+import { ResourceClass } from '../types';
 
 export interface PropertyMetadata
 {
-  class: Function;
+  Class: ResourceClass;
 
   propertyName: string;
 

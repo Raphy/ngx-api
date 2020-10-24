@@ -1,8 +1,9 @@
 import { SubCollectionOptions } from '../options';
+import { ResourceClass } from '../types';
 
 export interface SubCollectionMetadata
 {
-  class: Function;
+  Class: ResourceClass;
 
   propertyName: string;
 

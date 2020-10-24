@@ -1,9 +1,9 @@
 export enum MetadataKey {
-  Resource = 'api_platform:resource',
+  Resource = 'api-platform:resource',
 
-  Properties = 'api_platform:properties',
+  Properties = 'api-platform:properties',
 
-  SubResources = 'api_platform:sub_resources',
+  SubResources = 'api-platform:sub-resources',
 
-  SubCollections = 'api_platform:sub_collections',
+  SubCollections = 'api-platform:sub-collections',
 }

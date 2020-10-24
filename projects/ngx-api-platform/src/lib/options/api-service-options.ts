@@ -1,26 +1,27 @@
-export interface ApiServiceOptions
-{
-  headers?: {[name: string]: string};
+export interface ApiServiceOptions {
+  /**
+   * Define additional headers to the HttpRequest.
+   */
+  headers?: { [name: string]: string };
 
-  params?: {[name: string]: string};
+  /**
+   * Define additional query parameters to the HttpRequest.
+   */
+  params?: { [name: string]: string };
 }
 
-export interface ApiServiceItemOptions extends ApiServiceOptions
-{
-  mercure?: boolean;
+export interface ApiServiceItemOptions extends ApiServiceOptions {
 }
 
-export interface ApiServiceCollectionOptions extends ApiServiceOptions
-{
-  endpoint?: string;
-
-  mercure?: boolean;
+export interface ApiServiceCollectionOptions extends ApiServiceOptions {
+  /**
+   * Overrides the collection endpoint.
+   */
+  forceEndpoint?: string;
 }
 
-export interface ApiServicePersistOptions extends ApiServiceItemOptions
-{
+export interface ApiServicePersistOptions extends ApiServiceItemOptions {
 }
 
-export interface ApiServiceDeleteOptions extends ApiServiceOptions
-{
+export interface ApiServiceDeleteOptions extends ApiServiceOptions {
 }

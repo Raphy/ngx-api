@@ -12,6 +12,10 @@
       "element",
       "lib",
       "kebab-case"
-    ]
+    ],
+    "unified-signatures": false,
+    "no-empty-interface": {
+      "severity": "warning"
+    }
   }
 }

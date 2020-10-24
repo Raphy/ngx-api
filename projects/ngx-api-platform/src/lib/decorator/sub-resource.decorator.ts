@@ -1,51 +1,57 @@
-import { MetadataKey, SubResourceMetadata } from '../metadata';
+import { SubResourceMetadata } from '../metadata';
 import { SubResourceOptions } from '../options';
+import { Resource, ResourceClass } from '../types';
+import { addSubResourceMetadata } from '../utils';
 
 /**
- * @Annotation
- * @publicApi
- */
-export function SubResource(): PropertyDecorator;
-
-/**
+ * Defines a resource sub resource.
+ *
  * @Annotation
  * @publicApi
  */
 export function SubResource(options: SubResourceOptions): PropertyDecorator;
 
 /**
+ * Defines a resource sub resource.
+ *
  * @Annotation
  * @publicApi
  */
-export function SubResource(SubResourceClass: () => Function): PropertyDecorator;
+export function SubResource(SubResourceClass: () => ResourceClass): PropertyDecorator;
 
 /**
+ * Defines a resource sub resource.
+ *
  * @Annotation
  * @publicApi
  */
-export function SubResource(SubResourceClass: () => Function, options: Pick<SubResourceOptions, Exclude<keyof SubResourceOptions, 'SubResourceClass'>>): PropertyDecorator;
+export function SubResource(
+  SubResourceClass: () => ResourceClass,
+  options: Pick<SubResourceOptions, Exclude<keyof SubResourceOptions, 'SubResourceClass'>>,
+): PropertyDecorator;
 
 /**
+ * Defines a resource sub resource.
+ *
  * @Annotation
  * @publicApi
  */
-export function SubResource(SubResourceClassOrOptions?: (() => Function) | SubResourceOptions, maybeOptions ?: SubResourceOptions): PropertyDecorator {
-  return (object: Object, propertyName: string): void => {
-    const options: SubResourceOptions = Object.assign(SubResourceClassOrOptions instanceof Function ? {SubResourceClass: SubResourceClassOrOptions} : SubResourceClassOrOptions || {}, maybeOptions || {});
+export function SubResource(
+  SubResourceClassOrOptions: (() => ResourceClass) | SubResourceOptions,
+  maybeOptions ?: SubResourceOptions,
+): PropertyDecorator {
+  return (object: Resource, propertyName: string): void => {
+    const options = SubResourceClassOrOptions instanceof Function
+      ? Object.assign(maybeOptions, {SubResourceClass: SubResourceClassOrOptions})
+      : SubResourceClassOrOptions as SubResourceOptions;
 
     const metadata: SubResourceMetadata = {
-      class: object.constructor,
-      propertyName,
-      options: options || {},
+      Class: object.constructor,
+      propertyName: propertyName as string,
+      options,
     };
 
-    if (false === Reflect.hasMetadata(MetadataKey.SubResources, object.constructor)) {
-      Reflect.defineMetadata(MetadataKey.SubResources, {}, object.constructor);
-    }
-
-    const definedMetadata: { [propertyName: string]: SubResourceMetadata } = Reflect.getMetadata(MetadataKey.SubResources, object.constructor);
-    definedMetadata[propertyName] = metadata;
-    Reflect.defineMetadata(MetadataKey.SubResources, definedMetadata, object.constructor);
+    addSubResourceMetadata(object.constructor, metadata);
   };
 }
 
