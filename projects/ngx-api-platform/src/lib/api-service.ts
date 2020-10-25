@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injector } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { API_PLATFORM_DEFAULT_FORMAT, Format } from './content-negotiation';
 import { ResourceMetadata } from './metadata';
@@ -42,8 +42,8 @@ export class ApiService<TResource extends object, TCollection> {
     const endpoint = getResourceEndpoint(this.Class);
     const identifier = isIri(identifierOrIri) ? getIdentifierFromIri(identifierOrIri as string) : identifierOrIri;
 
-    const request: HttpRequest<TResource> = format.configureRequest(
-      new HttpRequest<TResource>(
+    const request: HttpRequest<any> = format.configureRequest(
+      new HttpRequest<any>(
         'GET',
         `${ this.config.apiBaseUrl }/${ endpoint }/${ identifier }`,
         {
@@ -53,16 +53,17 @@ export class ApiService<TResource extends object, TCollection> {
       ),
     );
 
-    return this.httpClient.request<object>(request)
+    return this.httpClient.request<any>(request)
       .pipe(
-        filter((event: HttpEvent<object>) => event.type === HttpEventType.Response),
-        switchMap((response: HttpResponse<object>) => {
+        filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+        switchMap((response: HttpResponse<any>) => {
           if (!format.supportsResponse(response)) {
             return throwError('The Response is not supported by the format.');
           }
 
           return of(response.body);
         }),
+        tap((body) => console.log('getItem > body', body)),
         switchMap((body: object) => format.deserializeItem<TResource>(this.Class, body)),
       )
       ;
@@ -76,8 +77,8 @@ export class ApiService<TResource extends object, TCollection> {
     const format = options.format ? this.injector.get<Format>(options.format) : this.defaultFormat;
     const endpoint = options.forceEndpoint ? options.forceEndpoint : getResourceEndpoint(this.Class);
 
-    const request: HttpRequest<TResource> = format.configureRequest(
-      new HttpRequest<TResource>(
+    const request: HttpRequest<any> = format.configureRequest(
+      new HttpRequest<any>(
         'GET',
         `${ this.config.apiBaseUrl }/${ endpoint }`,
         {
@@ -87,17 +88,17 @@ export class ApiService<TResource extends object, TCollection> {
       ),
     );
 
-    return this.httpClient.request<object>(request)
+    return this.httpClient.request<any>(request)
       .pipe(
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
-        switchMap((response: HttpResponse<object>) => {
+        switchMap((response: HttpResponse<any>) => {
           if (!format.supportsResponse(response)) {
             return throwError('The Response is not supported by the format.');
           }
 
           return of(response.body);
         }),
-        switchMap((body: object) => format.deserializeCollection<TResource>(this.Class, body)),
+        switchMap((body: any) => format.deserializeCollection<TResource>(this.Class, body)),
       )
       ;
   }
@@ -127,9 +128,9 @@ export class ApiService<TResource extends object, TCollection> {
             ),
           );
         }),
-        switchMap((request: HttpRequest<TResource>) => this.httpClient.request<object>(request)),
+        switchMap((request: HttpRequest<any>) => this.httpClient.request<any>(request)),
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
-        switchMap((response: HttpResponse<object>) => {
+        switchMap((response: HttpResponse<any>) => {
           if (!format.supportsResponse(response)) {
             return throwError('The Response is not supported by the format.');
           }
@@ -155,8 +156,8 @@ export class ApiService<TResource extends object, TCollection> {
       return throwError('The resource do not have an identifier and could not be deleted.');
     }
 
-    const request: HttpRequest<TResource> = format.configureRequest(
-      new HttpRequest<TResource>(
+    const request: HttpRequest<any> = format.configureRequest(
+      new HttpRequest<any>(
         'DELETE',
         `${ this.config.apiBaseUrl }/${ endpoint }/${ identifier }`,
         {
@@ -166,10 +167,10 @@ export class ApiService<TResource extends object, TCollection> {
       ),
     );
 
-    return this.httpClient.request<object>(request)
+    return this.httpClient.request<any>(request)
       .pipe(
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
-        switchMap((response: HttpResponse<object>) => {
+        switchMap((response: HttpResponse<any>) => {
           if (!format.supportsResponse(response)) {
             return throwError('The Response is not supported by the format.');
           }

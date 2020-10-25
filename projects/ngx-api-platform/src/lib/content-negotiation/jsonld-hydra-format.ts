@@ -1,6 +1,7 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { getContentType } from '../utils';
 import { AbstractFormat } from './abstract-format';
 import { JsonCollection } from './json-format';
@@ -12,15 +13,17 @@ export interface HydraCollection<TResource extends object> {
 @Injectable()
 export class JsonldHydraFormat extends AbstractFormat {
   deserializeCollection<TResource extends object>(Class: Function, body: object): Observable<HydraCollection<TResource>> {
-    return of(body as HydraCollection<TResource>);
-  }
-
-  deserializeItem<TResource extends object>(Class: Function, body: object): Observable<TResource> {
-    return of(body as TResource);
-  }
-
-  serializeItem<TResource extends object>(Class: Function, resource: TResource): Observable<object> {
-    return of({});
+    return of(body)
+      .pipe(
+        switchMap((body: HydraCollection<TResource>) => {
+          return forkJoin(body['hydra:member'].map((resourceBody: object) => this.denormalizeItem<TResource>(Class, resourceBody)))
+            .pipe(
+              tap((collection: Array<TResource>) => body['hydra:member'] = collection),
+              map(() => body),
+            );
+        }),
+      )
+      ;
   }
 
   configureRequest(request: HttpRequest<any>): HttpRequest<any> {

@@ -5,6 +5,7 @@
 export * from './lib/decorator';
 export * from './lib/content-negotiation';
 export * from './lib/metadata';
+export * from './lib/normalizer';
 export * from './lib/options';
 export * from './lib/api-service';
 export * from './lib/api-platform.module';

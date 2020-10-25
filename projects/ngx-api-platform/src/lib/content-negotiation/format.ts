@@ -27,7 +27,7 @@ export interface Format
   configureRequest(request: HttpRequest<any>): HttpRequest<any>;
 
   /**
-   * Checks if this format supports the request received from the API.
+   * Checks whether this format supports the request received from the API.
    */
   supportsResponse(response: HttpResponse<any>): boolean;
 }
