@@ -1,6 +1,5 @@
 import { SubResourceMetadata } from '../metadata';
 import { SubResourceOptions } from '../options';
-import { Resource, ResourceClass } from '../types';
 import { addSubResourceMetadata } from '../utils';
 
 /**
@@ -17,7 +16,7 @@ export function SubResource(options: SubResourceOptions): PropertyDecorator;
  * @Annotation
  * @publicApi
  */
-export function SubResource(SubResourceClass: () => ResourceClass): PropertyDecorator;
+export function SubResource(SubResourceClass: () => Function): PropertyDecorator;
 
 /**
  * Defines a resource sub resource.
@@ -26,7 +25,7 @@ export function SubResource(SubResourceClass: () => ResourceClass): PropertyDeco
  * @publicApi
  */
 export function SubResource(
-  SubResourceClass: () => ResourceClass,
+  SubResourceClass: () => Function,
   options: Pick<SubResourceOptions, Exclude<keyof SubResourceOptions, 'SubResourceClass'>>,
 ): PropertyDecorator;
 
@@ -37,10 +36,10 @@ export function SubResource(
  * @publicApi
  */
 export function SubResource(
-  SubResourceClassOrOptions: (() => ResourceClass) | SubResourceOptions,
+  SubResourceClassOrOptions: (() => Function) | SubResourceOptions,
   maybeOptions ?: SubResourceOptions,
 ): PropertyDecorator {
-  return (object: Resource, propertyName: string): void => {
+  return (object: object, propertyName: string): void => {
     const options = SubResourceClassOrOptions instanceof Function
       ? Object.assign(maybeOptions, {SubResourceClass: SubResourceClassOrOptions})
       : SubResourceClassOrOptions as SubResourceOptions;

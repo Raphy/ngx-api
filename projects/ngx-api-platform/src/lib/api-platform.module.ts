@@ -3,10 +3,9 @@ import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import 'reflect-metadata';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { ApiService, ApiServiceTokenFor } from './api-service';
-import { ResourceClass } from './types';
 
 export function getApiServiceProvider(
-  Class: ResourceClass,
+  Class: Function,
 ): Provider {
   return {
     provide: ApiServiceTokenFor(Class),
@@ -21,7 +20,7 @@ export function getApiServiceProvider(
 export function getApiServiceProviders(
   config: ApiPlatformConfig,
 ): Array<Provider> {
-  return config.resources.map((Class: ResourceClass) => getApiServiceProvider(Class));
+  return config.resources.map((Class: Function) => getApiServiceProvider(Class));
 }
 
 // @dynamic

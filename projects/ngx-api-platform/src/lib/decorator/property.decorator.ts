@@ -1,6 +1,6 @@
+import { Type } from '@angular/core';
 import { PropertyMetadata } from '../metadata';
 import { PropertyOptions } from '../options';
-import { Resource } from '../types';
 import { addPropertyMetadata } from '../utils';
 
 /**
@@ -42,7 +42,7 @@ export function Property(name: string, options: Pick<PropertyOptions, Exclude<ke
  * @publicApi
  */
 export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions ?: PropertyOptions): PropertyDecorator {
-  return (object: Resource, propertyName: string): void => {
+  return (object: object, propertyName: string): void => {
     const options: PropertyOptions = {};
     if (typeof nameOrOptions === 'string') {
       Object.assign(options, maybeOptions || {});
@@ -61,12 +61,12 @@ export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions 
     }
 
     const metadata: PropertyMetadata = {
-      Class: object.constructor,
+      Class: object.constructor as Type<object>,
       propertyName: propertyName as string,
       options: options || {},
     };
 
-    addPropertyMetadata(object.constructor, metadata);
+    addPropertyMetadata(object.constructor as Type<object>, metadata);
   };
 }
 

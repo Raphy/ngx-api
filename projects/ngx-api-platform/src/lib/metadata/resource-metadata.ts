@@ -1,8 +1,7 @@
 import { ResourceOptions } from '../options';
-import { ResourceClass } from '../types';
 
 export interface ResourceMetadata {
-  Class: ResourceClass;
+  Class: Function;
 
   options: ResourceOptions;
 }

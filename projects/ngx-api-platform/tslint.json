@@ -16,6 +16,7 @@
     "unified-signatures": false,
     "no-empty-interface": {
       "severity": "warning"
-    }
+    },
+    "ban-types": false
   }
 }

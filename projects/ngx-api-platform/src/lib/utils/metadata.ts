@@ -1,15 +1,14 @@
 import { MetadataKey, PropertyMetadata, ResourceMetadata, SubCollectionMetadata, SubResourceMetadata } from '../metadata';
-import { ResourceClass } from '../types';
 
 export function addResourceMetadata(
-  Class: ResourceClass,
+  Class: Function,
   metadata: ResourceMetadata,
 ): void {
   Reflect.defineMetadata(MetadataKey.Resource, metadata, Class);
 }
 
 export function getResourceMetadata(
-  Class: ResourceClass)
+  Class: Function)
   : ResourceMetadata {
   if (false === Reflect.hasMetadata(MetadataKey.Resource, Class)) {
     return undefined;
@@ -19,7 +18,7 @@ export function getResourceMetadata(
 }
 
 export function addPropertyMetadata(
-  Class: ResourceClass,
+  Class: Function,
   metadata: PropertyMetadata,
 ): void {
   if (false === Reflect.hasMetadata(MetadataKey.Properties, Class)) {
@@ -32,7 +31,7 @@ export function addPropertyMetadata(
 }
 
 export function getPropertyMetadata(
-  Class: ResourceClass,
+  Class: Function,
   propertyName: string,
 ): PropertyMetadata {
   if (false === Reflect.hasMetadata(MetadataKey.Properties, Class)) {
@@ -48,7 +47,7 @@ export function getPropertyMetadata(
 }
 
 export function addSubResourceMetadata(
-  Class: ResourceClass,
+  Class: Function,
   metadata: SubResourceMetadata,
 ): void {
   if (false === Reflect.hasMetadata(MetadataKey.SubResources, Class)) {
@@ -61,7 +60,7 @@ export function addSubResourceMetadata(
 }
 
 export function getSubResourceMetadata(
-  Class: ResourceClass,
+  Class: Function,
   propertyName: string,
 ): SubResourceMetadata {
   if (false === Reflect.hasMetadata(MetadataKey.SubResources, Class)) {
@@ -77,7 +76,7 @@ export function getSubResourceMetadata(
 }
 
 export function addSubCollectionMetadata(
-  Class: ResourceClass,
+  Class: Function,
   metadata: SubCollectionMetadata,
 ): void {
   if (false === Reflect.hasMetadata(MetadataKey.SubCollections, Class)) {
@@ -90,7 +89,7 @@ export function addSubCollectionMetadata(
 }
 
 export function getSubCollectionMetadata(
-  Class: ResourceClass,
+  Class: Function,
   propertyName: string,
 ): SubCollectionMetadata {
   if (false === Reflect.hasMetadata(MetadataKey.SubCollections, Class)) {

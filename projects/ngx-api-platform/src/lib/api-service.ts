@@ -3,18 +3,17 @@ import { Observable, of } from 'rxjs';
 import { ApiPlatformConfig } from './api-platform-config';
 import { ResourceMetadata } from './metadata';
 import { ApiServiceCollectionOptions, ApiServiceItemOptions } from './options';
-import { Resource, ResourceClass } from './types';
 import { getResourceMetadata } from './utils';
 
-export function ApiServiceTokenFor(Class: ResourceClass): string {
+export function ApiServiceTokenFor(Class: Function): string {
   const resourceMetadata: ResourceMetadata = getResourceMetadata(Class);
 
   return `API_PLATFORM_API_SERVICE_${ resourceMetadata.Class.name }_${ resourceMetadata.options.endpoint }`;
 }
 
-export class ApiService<TResource extends Resource> {
+export class ApiService<TResource extends object> {
   constructor(
-    private Class: ResourceClass,
+    private Class: Function,
     private config: ApiPlatformConfig,
     private httpClient: HttpClient,
   ) {

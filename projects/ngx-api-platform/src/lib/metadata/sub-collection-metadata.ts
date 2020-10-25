@@ -1,9 +1,9 @@
+import { Type } from '@angular/core';
 import { SubCollectionOptions } from '../options';
-import { ResourceClass } from '../types';
 
 export interface SubCollectionMetadata
 {
-  Class: ResourceClass;
+  Class: Function;
 
   propertyName: string;
 

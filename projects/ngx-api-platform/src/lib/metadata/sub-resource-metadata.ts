@@ -1,9 +1,9 @@
+import { Type } from '@angular/core';
 import { SubResourceOptions } from '../options';
-import { ResourceClass } from '../types';
 
 export interface SubResourceMetadata
 {
-  Class: ResourceClass;
+  Class: Function;
 
   propertyName: string;
 

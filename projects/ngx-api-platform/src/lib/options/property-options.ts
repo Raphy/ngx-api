@@ -1,5 +1,3 @@
-import { ResourceClass } from '../types';
-
 export interface PropertyOptions {
   /**
    * The name of the property in the JSON body sent and received by the API.
@@ -9,7 +7,7 @@ export interface PropertyOptions {
   /**
    * The type of the property. If not set, it will use Reflect to guess it.
    */
-  type?: () => ResourceClass;
+  type?: () => Function;
 
   /**
    * If set to true, the property will be serialized in JSON body sent to the API.

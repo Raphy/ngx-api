@@ -1,6 +1,5 @@
 import { SubCollectionMetadata } from '../metadata';
 import { SubCollectionOptions } from '../options';
-import { Resource, ResourceClass } from '../types';
 import { addSubCollectionMetadata } from '../utils';
 
 /**
@@ -17,7 +16,7 @@ export function SubCollection(options: SubCollectionOptions): PropertyDecorator;
  * @Annotation
  * @publicApi
  */
-export function SubCollection(SubResourceClass: () => ResourceClass): PropertyDecorator;
+export function SubCollection(SubResourceClass: () => Function): PropertyDecorator;
 
 /**
  * Defines a resource sub collection.
@@ -26,7 +25,7 @@ export function SubCollection(SubResourceClass: () => ResourceClass): PropertyDe
  * @publicApi
  */
 export function SubCollection(
-  SubResourceClass: () => ResourceClass,
+  SubResourceClass: () => Function,
   options: Pick<SubCollectionOptions, Exclude<keyof SubCollectionOptions, 'SubResourceClass'>>,
 ): PropertyDecorator;
 
@@ -37,12 +36,12 @@ export function SubCollection(
  * @publicApi
  */
 export function SubCollection(
-  SubResourceClassOrOptions: (() => ResourceClass) | SubCollectionOptions,
+  SubResourceClassOrOptions: (() => Function) | SubCollectionOptions,
   maybeOptions ?: SubCollectionOptions,
 ): PropertyDecorator {
-  return (object: Resource, propertyName: string): void => {
+  return (object: object, propertyName: string): void => {
     const options: SubCollectionOptions = SubResourceClassOrOptions instanceof Function
-      ? Object.assign(maybeOptions, {SubResourceClass: SubResourceClassOrOptions as ResourceClass})
+      ? Object.assign(maybeOptions, {SubResourceClass: SubResourceClassOrOptions})
       : SubResourceClassOrOptions as SubCollectionOptions;
     options.subEndpoint = options.subEndpoint || propertyName as string;
 

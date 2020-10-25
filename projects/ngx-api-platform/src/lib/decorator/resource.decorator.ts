@@ -1,6 +1,5 @@
 import { ResourceMetadata } from '../metadata';
 import { ResourceOptions } from '../options';
-import { ResourceClass } from '../types';
 import { addResourceMetadata } from '../utils';
 
 /**
@@ -34,7 +33,7 @@ export function Resource(endpoint: string, options: Pick<ResourceOptions, Exclud
  * @publicApi
  */
 export function Resource(endpointOrOptions: string | ResourceOptions, maybeOptions?: ResourceOptions): ClassDecorator {
-  return (Class: ResourceClass): void => {
+  return (Class: Function): void => {
     const options: ResourceOptions = Object.assign(
       typeof endpointOrOptions === 'string' ? {endpoint: endpointOrOptions} : endpointOrOptions,
       maybeOptions || {},
