@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
+import { ActivatedRoute } from '@angular/router';
+import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Todo } from '../../resources/todo';
@@ -18,7 +17,7 @@ export class TodoViewComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Todo)) private todoApiService: ApiService<Todo>,
+    @Inject(ApiServiceTokenFor(Todo)) private todoApiService: ApiService<Todo, JsonCollection<Todo>>,
     private activatedRoute: ActivatedRoute,
   ) {
   }
@@ -33,7 +32,7 @@ export class TodoViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('todo')) {
-            return this.todoApiService.findItem(params.todo);
+            return this.todoApiService.getItem(params.todo);
           }
 
           return of(null);

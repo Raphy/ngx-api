@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
+import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Post } from '../../resources/post';
@@ -18,7 +17,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Post)) private postApiService: ApiService<Post>,
+    @Inject(ApiServiceTokenFor(Post)) private postApiService: ApiService<Post, JsonCollection<Post>>,
     private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
@@ -34,7 +33,7 @@ export class PostViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('post')) {
-            return this.postApiService.findItem(params.post);
+            return this.postApiService.getItem(params.post);
           }
 
           return of(null);

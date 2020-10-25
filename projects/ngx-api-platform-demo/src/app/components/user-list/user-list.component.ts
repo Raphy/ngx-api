@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
+import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
 import { User } from '../../resources/user';
 
@@ -13,12 +13,12 @@ export class UserListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(User)) private userApiService: ApiService<User>,
+    @Inject(ApiServiceTokenFor(User)) private userApiService: ApiService<User, JsonCollection<User>>,
   ) {
   }
 
   ngOnInit(): void {
-    this.userApiService.findCollection().subscribe((users: Array<User>) => this.users = users);
+    this.userApiService.getCollection().subscribe((users: Array<User>) => this.users = users);
   }
 
   ngOnDestroy(): void {

@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
-import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
+import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Album } from '../../resources/album';
@@ -18,7 +17,7 @@ export class AlbumViewComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Album)) private albumApiService: ApiService<Album>,
+    @Inject(ApiServiceTokenFor(Album)) private albumApiService: ApiService<Album, JsonCollection<Album>>,
     private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
@@ -34,7 +33,7 @@ export class AlbumViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('album')) {
-            return this.albumApiService.findItem(params.album);
+            return this.albumApiService.getItem(params.album);
           }
 
           return of(null);

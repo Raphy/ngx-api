@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ApiService, ApiServiceTokenFor } from 'ngx-api-platform';
+import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
 import { Todo } from '../../resources/todo';
 
@@ -13,12 +13,12 @@ export class TodoListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Todo)) private todoApiService: ApiService<Todo>,
+    @Inject(ApiServiceTokenFor(Todo)) private todoApiService: ApiService<Todo, JsonCollection<Todo>>,
   ) {
   }
 
   ngOnInit(): void {
-    this.todoApiService.findCollection().subscribe((todos: Array<Todo>) => this.todos = todos);
+    this.todoApiService.getCollection().subscribe((todos: Array<Todo>) => this.todos = todos);
   }
 
   ngOnDestroy(): void {
