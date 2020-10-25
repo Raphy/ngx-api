@@ -1,19 +1,17 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { Injector, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import 'reflect-metadata';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { ApiService, ApiServiceTokenFor } from './api-service';
+import { API_PLATFORM_DEFAULT_FORMAT, JsonFormat } from './content-negotiation';
 
 export function getApiServiceProvider(
   Class: Function,
 ): Provider {
   return {
     provide: ApiServiceTokenFor(Class),
-    useFactory: (config: ApiPlatformConfig, httpClient: HttpClient) => new ApiService(Class, config, httpClient),
-    deps: [
-      API_PLATFORM_CONFIG,
-      HttpClient,
-    ],
+    useFactory: (injector: Injector) => new ApiService(Class, injector),
+    deps: [Injector],
   };
 }
 
@@ -36,12 +34,18 @@ export class ApiPlatformModule {
   static forRoot(
     config: ApiPlatformConfig,
   ): ModuleWithProviders<ApiPlatformModule> {
+    config.defaultFormat = config.defaultFormat || JsonFormat;
+
     return {
       ngModule: ApiPlatformModule,
       providers: [
         {
           provide: API_PLATFORM_CONFIG,
           useValue: config,
+        },
+        {
+          provide: API_PLATFORM_DEFAULT_FORMAT,
+          useClass: config.defaultFormat,
         },
         ...getApiServiceProviders(config),
       ],

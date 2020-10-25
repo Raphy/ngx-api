@@ -41,7 +41,7 @@ export function SubCollection(
 ): PropertyDecorator {
   return (object: object, propertyName: string): void => {
     const options: SubCollectionOptions = SubResourceClassOrOptions instanceof Function
-      ? Object.assign(maybeOptions, {SubResourceClass: SubResourceClassOrOptions})
+      ? Object.assign(maybeOptions || {}, {SubResourceClass: SubResourceClassOrOptions})
       : SubResourceClassOrOptions as SubCollectionOptions;
     options.subEndpoint = options.subEndpoint || propertyName as string;
 

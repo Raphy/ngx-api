@@ -3,6 +3,7 @@
  */
 
 export * from './lib/decorator';
+export * from './lib/content-negotiation';
 export * from './lib/metadata';
 export * from './lib/options';
 export * from './lib/api-service';
