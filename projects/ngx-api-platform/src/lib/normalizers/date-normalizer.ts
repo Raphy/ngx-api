@@ -26,6 +26,6 @@ export class DateNormalizer implements Normalizer, Denormalizer {
   }
 
   supports(type: () => Function): boolean {
-    return type() === Date;
+    return (type as any) === Date;
   }
 }

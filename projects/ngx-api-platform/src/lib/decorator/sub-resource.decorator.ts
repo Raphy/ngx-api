@@ -1,6 +1,7 @@
 import { SubResourceMetadata } from '../metadata';
 import { SubResourceOptions } from '../options';
 import { addSubResourceMetadata } from '../utils';
+import construct = Reflect.construct;
 
 /**
  * Defines a resource sub resource.

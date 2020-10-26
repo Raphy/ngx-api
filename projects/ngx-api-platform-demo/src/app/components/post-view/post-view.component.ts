@@ -39,7 +39,11 @@ export class PostViewComponent implements OnInit, OnDestroy {
           return of(null);
         }),
       )
-      .subscribe((post: Post) => this.post = post);
+      .subscribe((post: Post) => {
+        this.post = post;
+
+        this.postApiService.persist(post).subscribe();
+      });
   }
 
   ngOnDestroy(): void {

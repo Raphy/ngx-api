@@ -12,8 +12,8 @@ export class Post
   @API.Property()
   title: string;
 
-  @API.Property()
-  body: string;
+  @API.Property('body')
+  content: string;
 
   @API.Property('userId')
   @API.SubResource(() => User)

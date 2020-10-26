@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-home',
@@ -73,6 +74,10 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit(): void {
+
+    console.log(moment().format('Y-MM-DDTHH:mm:ssZ'));
+    console.log(moment().format(undefined));
+
   }
 
 }

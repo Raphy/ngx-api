@@ -24,7 +24,7 @@
           <th scope="row">{{ album.id }}</th>
           <td>{{ album.title }}</td>
           <td>
-            <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id]">
+            <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id.toString()]">
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               View
             </a>

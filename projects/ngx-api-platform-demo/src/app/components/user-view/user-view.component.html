@@ -42,7 +42,7 @@
                 <th scope="row">{{ post.id }}</th>
                 <td>{{ post.title }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>
@@ -70,7 +70,7 @@
                 <th scope="row">{{ album.id }}</th>
                 <td>{{ album.title }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>
@@ -100,7 +100,7 @@
                 <td>{{ todo.title }}</td>
                 <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'todos', todo.id]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'todos', todo.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>

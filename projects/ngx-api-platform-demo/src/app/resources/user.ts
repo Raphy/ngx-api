@@ -31,7 +31,7 @@ export class User {
     () => Todo,
     {
       apiServiceCollectionOptions: (resource: User) => ({
-        endpoint: '/todos',
+        forceEndpoint: 'todos',
         params: {userId: `${ resource.id }`},
       }),
     },

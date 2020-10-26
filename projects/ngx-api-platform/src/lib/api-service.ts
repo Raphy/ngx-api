@@ -1,17 +1,30 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injector } from '@angular/core';
+import { InjectionToken, Injector } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, share, switchMap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { API_PLATFORM_DEFAULT_FORMAT, Format } from './content-negotiation';
 import { ResourceMetadata } from './metadata';
 import { ApiServiceCollectionOptions, ApiServiceDeleteOptions, ApiServiceItemOptions, ApiServicePersistOptions } from './options';
-import { getIdentifierFromIri, getResourceEndpoint, getResourceIdentifier, getResourceMetadata, isIri } from './utils';
+import {
+  getIdentifierFromIri,
+  getResourceEndpoint,
+  getResourceIdentifier,
+  getResourceMetadata,
+  isIri,
+} from './utils';
 
-export function ApiServiceTokenFor(Class: Function): string {
+const apiServiceTokens: {[description: string]: InjectionToken<ApiService<any, any>>} = {};
+
+export function ApiServiceTokenFor(Class: Function): InjectionToken<ApiService<any, any>> {
   const resourceMetadata: ResourceMetadata = getResourceMetadata(Class);
+  const description = `API_PLATFORM_API_SERVICE_${ resourceMetadata.Class.name }_${ resourceMetadata.options.endpoint }`;
 
-  return `API_PLATFORM_API_SERVICE_${ resourceMetadata.Class.name }_${ resourceMetadata.options.endpoint }`;
+  if (!apiServiceTokens.hasOwnProperty(description)) {
+    apiServiceTokens[description] = new InjectionToken<ApiService<any, any>>(description);
+  }
+
+  return apiServiceTokens[description];
 }
 
 export class ApiService<TResource extends object, TCollection> {
@@ -63,8 +76,8 @@ export class ApiService<TResource extends object, TCollection> {
 
           return of(response.body);
         }),
-        tap((body) => console.log('getItem > body', body)),
         switchMap((body: object) => format.deserializeItem<TResource>(this.Class, body)),
+        share(),
       )
       ;
   }
@@ -99,6 +112,7 @@ export class ApiService<TResource extends object, TCollection> {
           return of(response.body);
         }),
         switchMap((body: any) => format.deserializeCollection<TResource>(this.Class, body)),
+        share(),
       )
       ;
   }
@@ -138,6 +152,7 @@ export class ApiService<TResource extends object, TCollection> {
           return of(response.body);
         }),
         switchMap((body: object) => format.deserializeItem<TResource>(this.Class, body)),
+        share(),
       )
       ;
   }
@@ -178,6 +193,7 @@ export class ApiService<TResource extends object, TCollection> {
           return of(response.body);
         }),
         map(() => null),
+        share(),
       )
       ;
   }

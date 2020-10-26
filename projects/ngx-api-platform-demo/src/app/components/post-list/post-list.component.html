@@ -24,7 +24,7 @@
           <th scope="row">{{ post.id }}</th>
           <td>{{ post.title }}</td>
           <td>
-            <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id]">
+            <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id.toString()]">
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               View
             </a>

@@ -16,7 +16,7 @@
         <div class="card-body">
           <h5 class="card-title">Details</h5>
           <div class="card-text">
-            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (post?.user | async)?.id]">{{ (post?.user | async)?.username }}</a></div>
+            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (post?.user | async)?.id.toString()]">{{ (post?.user | async)?.username }}</a></div>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
       <div class="card my-3">
         <div class="card-body">
           <h5 class="card-title">Body</h5>
-          <div class="card-text">{{ post?.body }}</div>
+          <div class="card-text">{{ post?.content }}</div>
         </div>
       </div>
 

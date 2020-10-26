@@ -8,8 +8,8 @@ import {
   API_PLATFORM_DATE_NORMALIZER_FORMAT,
   API_PLATFORM_DEFAULT_DATE_FORMAT, API_PLATFORM_DENORMALIZERS,
   API_PLATFORM_NORMALIZERS,
-  DateNormalizer,
-} from './normalizer';
+  DateNormalizer, NativeNormalizer, SubCollectionDenormalizer, SubResourceNormalizer,
+} from './normalizers';
 
 function getApiServiceProvider(Class: Function): Provider {
   return {
@@ -29,6 +29,16 @@ const normalizersProviders: Array<Provider> = [
     multi: true,
     useClass: DateNormalizer,
   },
+  {
+    provide: API_PLATFORM_NORMALIZERS,
+    multi: true,
+    useClass: NativeNormalizer,
+  },
+  {
+    provide: API_PLATFORM_NORMALIZERS,
+    multi: true,
+    useClass: SubResourceNormalizer,
+  },
 ];
 
 const denormalizersProviders: Array<Provider> = [
@@ -40,6 +50,21 @@ const denormalizersProviders: Array<Provider> = [
     provide: API_PLATFORM_DENORMALIZERS,
     multi: true,
     useClass: DateNormalizer,
+  },
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: NativeNormalizer,
+  },
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: SubResourceNormalizer,
+  },
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: SubCollectionDenormalizer,
   },
 ];
 

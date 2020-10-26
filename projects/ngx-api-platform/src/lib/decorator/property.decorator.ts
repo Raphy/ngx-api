@@ -54,7 +54,7 @@ export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions 
     options.name = options.name || propertyName as string;
     options.input = typeof options.input === 'boolean' ? options.input : true;
     options.output = typeof options.output === 'boolean' ? options.output : true;
-    options.type = options.name || Reflect.getMetadata('design:type', object, propertyName);
+    options.type = options.type || Reflect.getMetadata('design:type', object, propertyName);
 
     if (!options.type) {
       throw new Error(`[ApiPlatform] The Property() decorator could not determinate the type of the property "${ propertyName }"`);

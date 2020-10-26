@@ -26,7 +26,7 @@
           <td>{{ todo.title }}</td>
           <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
           <td>
-            <a class="btn btn-primary" [routerLink]="['/', 'todos', todo.id]">
+            <a class="btn btn-primary" [routerLink]="['/', 'todos', todo.id.toString()]">
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               View
             </a>

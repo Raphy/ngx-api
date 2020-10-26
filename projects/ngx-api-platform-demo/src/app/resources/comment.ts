@@ -1,7 +1,6 @@
 import * as API from 'ngx-api-platform/decorators';
 import { Observable } from 'rxjs';
 import { Post } from './post';
-import { User } from './user';
 
 @API.Resource('comments')
 export class Comment

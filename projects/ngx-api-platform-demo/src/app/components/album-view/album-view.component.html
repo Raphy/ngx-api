@@ -16,7 +16,7 @@
         <div class="card-body">
           <h5 class="card-title">Details</h5>
           <div class="card-text">
-            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (album?.user | async)?.id]">{{ (album?.user | async)?.username }}</a></div>
+            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (album?.user | async)?.id.toString()]">{{ (album?.user | async)?.username }}</a></div>
           </div>
         </div>
       </div>
