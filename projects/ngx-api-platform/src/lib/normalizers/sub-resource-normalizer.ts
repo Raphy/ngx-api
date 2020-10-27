@@ -2,7 +2,7 @@ import { Injectable, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { ApiServiceTokenFor } from '../api-service';
-import { getResourceIdentifier, getSubResourceMetadata } from '../utils';
+import { getResourceIdentifier, getResourceMetadata, getSubResourceMetadata } from '../utils';
 import { Denormalizer, DenormalizerContext } from './denormalizer';
 import { Normalizer, NormalizerContext } from './normalizer';
 
@@ -31,12 +31,17 @@ export class SubResourceNormalizer implements Normalizer, Denormalizer {
   normalize(value: any, type: () => Function, context: NormalizerContext): Observable<any> {
     return ((type as any) === Observable ? value : of(value))
       .pipe(
-        map((subResource) => getResourceIdentifier(subResource))
+        map((subResource: object) => getResourceIdentifier(subResource))
       )
       ;
   }
 
   supports(type: () => Function, context: NormalizerContext): boolean {
-    return !!getSubResourceMetadata(context.ResourceClass, context.propertyName);
+    const subResourceMetadata = getSubResourceMetadata(context.ResourceClass, context.propertyName);
+    if (!subResourceMetadata) {
+      return false;
+    }
+
+    return !!getResourceMetadata(subResourceMetadata.options.SubResourceClass);
   }
 }

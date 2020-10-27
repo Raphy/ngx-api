@@ -1,8 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { ApiServiceTokenFor } from '../api-service';
-import { getResourceEndpoint, getResourceIdentifier, getSubCollectionMetadata } from '../utils';
+import { getResourceEndpoint, getResourceIdentifier, getResourceMetadata, getSubCollectionMetadata } from '../utils';
 import { Denormalizer, DenormalizerContext } from './denormalizer';
 import { NormalizerContext } from './normalizer';
 
@@ -27,6 +26,11 @@ export class SubCollectionDenormalizer implements Denormalizer {
   }
 
   supports(type: () => Function, context: NormalizerContext): boolean {
-    return !!getSubCollectionMetadata(context.ResourceClass, context.propertyName);
+    const subCollectionMetadata = getSubCollectionMetadata(context.ResourceClass, context.propertyName);
+    if (!subCollectionMetadata) {
+      return false;
+    }
+
+    return !!getResourceMetadata(subCollectionMetadata.options.SubResourceClass);
   }
 }

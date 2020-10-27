@@ -1,3 +1,5 @@
+import { getResourceEndpoint, getResourceIdentifier } from './resource';
+
 export function isIri(subject: any): boolean {
   return typeof subject === 'string' && subject.startsWith('/');
 }
@@ -22,7 +24,7 @@ export function getIdentifierFromIri(iri: string): string {
   return iriParts[2];
 }
 
-export function extractEndpointAndIdentifierFromIri(iri: string): [string, string] {
+export function getEndpointAndIdentifierFromIri(iri: string): [string, string] {
   const iriParts = iri.split('/');
 
   if (iriParts.length < 2) {
@@ -34,4 +36,11 @@ export function extractEndpointAndIdentifierFromIri(iri: string): [string, strin
   }
 
   return [iriParts[1], iriParts[2]];
+}
+
+export function getIriFromResource<TResource extends object>(resoure: TResource): string {
+  const endpoint = getResourceEndpoint(resoure.constructor);
+  const identifier = getResourceIdentifier(resoure.constructor);
+
+  return `/${ endpoint }/${ identifier }`;
 }

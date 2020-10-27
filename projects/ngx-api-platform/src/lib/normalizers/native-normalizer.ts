@@ -10,7 +10,6 @@ export class NativeNormalizer implements Normalizer, Denormalizer {
   }
 
   normalize(value: any, type: () => Function): Observable<any> {
-    console.log(`${this.constructor.name}::normalize()`, {value, type});
     return of(Reflect.construct(type, [value]));
   }
 
