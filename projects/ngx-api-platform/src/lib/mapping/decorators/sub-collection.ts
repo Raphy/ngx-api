@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
 import { SubCollectionMetadata } from '../metadata/sub-collection-metadata';
 import { SubCollectionOptions } from '../options/sub-collection-options';
-import { addSubCollectionMetadata } from '../utilities/metadata';
+import { addSubCollectionMetadata } from '../../utilities/metadata';
 
 /**
  * Defines a resource sub collection.

@@ -11,7 +11,7 @@ import {
   getSubCollectionsMetadata,
   getSubResourcesMetadata,
   validateMetadata,
-} from './mapping/utilities/metadata';
+} from './utilities/metadata';
 import { ResourceServiceOptions } from './resource-service-options';
 
 /**

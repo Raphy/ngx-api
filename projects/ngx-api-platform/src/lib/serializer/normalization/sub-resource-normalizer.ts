@@ -3,8 +3,8 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Denormalizer } from './denormalizer';
 import { Normalizer } from './normalizer';
-import { getIdentifierMetadata, getResourceMetadata } from '../../mapping/utilities/metadata';
 import { ResourceService, ResourceServiceTokenFor } from '../../resource-service';
+import { getIdentifierMetadata, getResourceMetadata } from '../../utilities/metadata';
 
 @Injectable()
 export class SubResourceNormalizer implements Normalizer, Denormalizer {

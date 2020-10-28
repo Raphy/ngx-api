@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
 import { PropertyMetadata } from '../metadata/property-metadata';
 import { PropertyOptions } from '../options/property-options';
-import { addPropertyMetadata } from '../utilities/metadata';
+import { addPropertyMetadata } from '../../utilities/metadata';
 
 /**
  * Defines a resource property.

@@ -24,8 +24,6 @@ export * from './lib/mapping/metadata/resource-metadata';
 export * from './lib/mapping/metadata/sub-collection-metadata';
 export * from './lib/mapping/metadata/sub-resource-metadata';
 
-export * from './lib/mapping/utilities/metadata';
-
 export * from './lib/serializer/serializer';
 
 export * from './lib/serializer/errors/serializer-error';
@@ -35,6 +33,8 @@ export * from './lib/serializer/normalization/denormalizer';
 export * from './lib/serializer/normalization/resource-normalizer';
 export * from './lib/serializer/normalization/sub-resource-normalizer';
 export * from './lib/serializer/normalization/date-normalizer';
+
+export * from './lib/utilities/metadata';
 
 export * from './lib/api-platform.module';
 export * from './lib/api-platform-config';

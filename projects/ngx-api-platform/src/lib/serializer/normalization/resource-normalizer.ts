@@ -10,7 +10,7 @@ import {
   getPropertyMetadata,
   getResourceMetadata,
   getSubResourceMetadata,
-} from '../../mapping/utilities/metadata';
+} from '../../utilities/metadata';
 
 @Injectable()
 export class ResourceNormalizer implements Normalizer, Denormalizer {
