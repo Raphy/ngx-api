@@ -1,30 +1,29 @@
-import * as API from 'ngx-api-platform/mapping/decorators';
+import { Identifier, Input, Output, Property, Resource, SubCollection, SubResource } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Comment } from './comment';
 import { User } from './user';
 
-@API.Resource('posts')
-export class Post
-{
-  @API.Identifier()
-  @API.Output()
+@Resource('posts')
+export class Post {
+  @Identifier()
+  @Output()
   id: number;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   title: string;
 
-  @API.Property('body')
-  @API.Input()
-  @API.Output()
+  @Property('body')
+  @Input()
+  @Output()
   content: string;
 
-  @API.Property('userId')
-  @API.Input()
-  @API.Output()
-  @API.SubResource(() => User)
+  @Property('userId')
+  @Input()
+  @Output()
+  @SubResource(() => User)
   user: Observable<User>;
 
-  @API.SubCollection(() => Comment)
+  @SubCollection(() => Comment)
   comments: Observable<Array<Comment>>;
 }

@@ -1,42 +1,42 @@
 import { HttpParams } from '@angular/common/http';
-import * as API from 'ngx-api-platform/mapping/decorators';
+import { Identifier, Input, Output, Resource, SubCollection } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Album } from './album';
 import { Post } from './post';
 import { Todo } from './todo';
 
-@API.Resource('users')
+@Resource('users')
 export class User {
-  @API.Identifier()
-  @API.Output()
+  @Identifier()
+  @Output()
   id: number;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   name: string;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   username: string;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   email: string;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   website: string;
 
-  @API.Input()
-  @API.Output()
+  @Input()
+  @Output()
   phone: string;
 
-  @API.SubCollection({
+  @SubCollection({
     type: () => Post,
   })
   posts: Observable<Array<Post>>;
 
-  @API.SubCollection(
+  @SubCollection(
     () => Todo,
     {
       resourceServiceOptions: (resource: User) => ({
@@ -49,6 +49,6 @@ export class User {
   )
   todos: Observable<Array<Todo>>;
 
-  @API.SubCollection(() => Album)
+  @SubCollection(() => Album)
   albums: Observable<Array<Album>>;
 }
