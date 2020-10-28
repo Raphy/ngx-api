@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
+import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { User } from '../../resources/user';
@@ -17,7 +17,7 @@ export class UserViewComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(User)) private userApiService: ApiService<User, JsonCollection<User>>,
+    @Inject(ResourceServiceTokenFor(User)) private userApiService: ResourceService<User>,
     private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
@@ -33,7 +33,7 @@ export class UserViewComponent implements OnInit, OnDestroy {
           this.activateTabId = fragment;
 
           if (params.hasOwnProperty('user')) {
-            return this.userApiService.getItem(params.user);
+            return this.userApiService.getResource(params.user);
           }
 
           return of(null);

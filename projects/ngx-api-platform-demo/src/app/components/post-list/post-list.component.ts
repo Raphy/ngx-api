@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
+import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
 import { Post } from '../../resources/post';
 
@@ -13,7 +13,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Post)) private postApiService: ApiService<Post, JsonCollection<Post>>,
+    @Inject(ResourceServiceTokenFor(Post)) private postApiService: ResourceService<Post>,
   ) {
   }
 

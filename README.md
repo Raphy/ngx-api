@@ -30,34 +30,28 @@ ApiPlatformModule.forRoot({
 })
 ```
 
-Serializer
-    constructor(
-        @Inject(API_PLATFORM_ENCODERS) private encoders: Array<Encode | Decode>,
-        @Inject(API_PLATFORM_ENCODERS) private normalizers: Array<Normalizer | Denormalizer>,
-    )
-    
-    serialize(value: any, format: string): any;
-    
-    deserialize(value: any, format: string): any;
+{
+    userId: 1,
+    title: "toto",
+    createdAt: "2020-10-28T01:00:42+02:00"
+}
 
-Encoder
-    Decode
-        decode(value: string): Observable<object>;
-        supportsDecoding(contentType: string): boolean;
-    
-    Encode
-        encode(object: object): Observable<string>;
-        supportsEncoding(contentType: string): boolean;
-    
-    JsonEncoder: Encode, Decode
-    
-    JsonldHydraEncoder: Encode, Decode
-    
+{
+    user: Observable<User>,
+    title: "toto",
+    createdAt: Date,
+}
+
 Normalizer
-    Normalizer
-        normalize(value: any): Observable<any>
-        supportsNormalization(type: () => Function): boolean
+    normalize(value: any, type: Function): Observable<any>;
+    supports(type: Function): bool;
+    
+Denormalizer
+    denormalize(value: any, type: Function): Observable<any>;
+    supports(type: Function): bool;
 
-    Denormalizer
-        denormalize(value: any): Observable<any>
-        supportsDenormalization(type: () => Function): boolean
+ResourceNormalizer: Normalizer, Denormalizer
+    normalize(value: Object, type: Type<any>): Observable<object>;
+    denormalize(value: object, type: Type<any>): Observable<Object>;
+    supports(type: Type<any>): bool;
+

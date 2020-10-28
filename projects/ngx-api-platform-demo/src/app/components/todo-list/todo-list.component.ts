@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
+import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
 import { Todo } from '../../resources/todo';
 
@@ -13,7 +13,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Todo)) private todoApiService: ApiService<Todo, JsonCollection<Todo>>,
+    @Inject(ResourceServiceTokenFor(Todo)) private todoApiService: ResourceService<Todo>,
   ) {
   }
 

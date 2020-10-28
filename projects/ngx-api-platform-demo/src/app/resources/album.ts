@@ -1,4 +1,4 @@
-import * as API from 'ngx-api-platform/decorators';
+import * as API from 'ngx-api-platform/mapping/decorators';
 import { Observable } from 'rxjs';
 import { Photo } from './photo';
 import { User } from './user';
@@ -6,13 +6,17 @@ import { User } from './user';
 @API.Resource('albums')
 export class Album
 {
-  @API.Property({input: false})
+  @API.Identifier()
+  @API.Output()
   id: number;
 
-  @API.Property()
+  @API.Input()
+  @API.Output()
   title: string;
 
   @API.Property('userId')
+  @API.Input()
+  @API.Output()
   @API.SubResource(() => User)
   user: Observable<User>;
 

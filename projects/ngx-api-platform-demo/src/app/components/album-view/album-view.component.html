@@ -1,42 +1,42 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-    <li class="breadcrumb-item"><a [routerLink]="['/', 'albums']">Albums</a></li>
-    <li class="breadcrumb-item active">{{ album?.title }}</li>
-  </ol>
-</nav>
+<!--<nav aria-label="breadcrumb">-->
+<!--  <ol class="breadcrumb">-->
+<!--    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>-->
+<!--    <li class="breadcrumb-item"><a [routerLink]="['/', 'albums']">Albums</a></li>-->
+<!--    <li class="breadcrumb-item active">{{ album?.title }}</li>-->
+<!--  </ol>-->
+<!--</nav>-->
 
-<div class="container">
-  <div class="row">
-    <div class="col">
+<!--<div class="container">-->
+<!--  <div class="row">-->
+<!--    <div class="col">-->
 
-      <h1>{{ album?.title }}</h1>
+<!--      <h1>{{ album?.title }}</h1>-->
 
-      <div class="card my-3">
-        <div class="card-body">
-          <h5 class="card-title">Details</h5>
-          <div class="card-text">
-            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (album?.user | async)?.id.toString()]">{{ (album?.user | async)?.username }}</a></div>
-          </div>
-        </div>
-      </div>
+<!--      <div class="card my-3">-->
+<!--        <div class="card-body">-->
+<!--          <h5 class="card-title">Details</h5>-->
+<!--          <div class="card-text">-->
+<!--            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (album?.user | async)?.id.toString()]">{{ (album?.user | async)?.username }}</a></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <ul ngbNav #subCollectionsNav="ngbNav" [activeId]="activateTabId" (activeIdChange)="updateFragmentForActiveTab($event)" class="nav-tabs">
-        <li ngbNavItem="albums">
-          <a ngbNavLink>Albums</a>
-          <ng-template ngbNavContent>
+<!--      <ul ngbNav #subCollectionsNav="ngbNav" [activeId]="activateTabId" (activeIdChange)="updateFragmentForActiveTab($event)" class="nav-tabs">-->
+<!--        <li ngbNavItem="albums">-->
+<!--          <a ngbNavLink>Albums</a>-->
+<!--          <ng-template ngbNavContent>-->
 
-            <div class="row row-cols-6 mt-3">
-              <div *ngFor="let photo of (album?.photos | async)" class="col text-center mb-3">
-                <a [href]="photo.url" target="_blank"><img [src]="photo.thumbnailUrl" class="img-fluid" [alt]="'Photo Thumbnail #' + photo.id"></a>
-              </div>
-            </div>
+<!--            <div class="row row-cols-6 mt-3">-->
+<!--              <div *ngFor="let photo of (album?.photos | async)" class="col text-center mb-3">-->
+<!--                <a [href]="photo.url" target="_blank"><img [src]="photo.thumbnailUrl" class="img-fluid" [alt]="'Photo Thumbnail #' + photo.id"></a>-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </ng-template>
-        </li>
+<!--          </ng-template>-->
+<!--        </li>-->
 
-      </ul>
-      <div [ngbNavOutlet]="subCollectionsNav"></div>
-    </div>
-  </div>
-</div>
+<!--      </ul>-->
+<!--      <div [ngbNavOutlet]="subCollectionsNav"></div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

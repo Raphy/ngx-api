@@ -2,13 +2,11 @@
  * Public API Surface of ngx-api-platform
  */
 
-export * from './lib/decorator';
-export * from './lib/content-negotiation';
-export * from './lib/metadata';
-export * from './lib/normalizers';
-export * from './lib/options';
-export * from './lib/api-service';
+// import * as API from './lib/decorators';
+export * from './lib/errors';
+export * from './lib/mapping';
 export * from './lib/api-platform.module';
 export * from './lib/api-platform-config';
-export * from './lib/api-service';
+export * from './lib/resource-service';
 
+// export { API };

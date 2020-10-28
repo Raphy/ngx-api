@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ApiService, ApiServiceTokenFor, JsonCollection } from 'ngx-api-platform';
+import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
 import { Album } from '../../resources/album';
 
@@ -13,12 +13,12 @@ export class AlbumListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
-    @Inject(ApiServiceTokenFor(Album)) private albumApiService: ApiService<Album, JsonCollection<Album>>,
+    @Inject(ResourceServiceTokenFor(Album)) private albumResourceService: ResourceService<Album>,
   ) {
   }
 
   ngOnInit(): void {
-    this.albumApiService.getCollection().subscribe((albums: Array<Album>) => this.albums = albums);
+    this.albumResourceService.getCollection().subscribe((albums: Array<Album>) => this.albums = albums);
   }
 
   ngOnDestroy(): void {

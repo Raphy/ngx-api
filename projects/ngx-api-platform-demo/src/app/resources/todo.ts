@@ -1,20 +1,25 @@
-import * as API from 'ngx-api-platform/decorators';
+import * as API from 'ngx-api-platform/mapping/decorators';
 import { Observable } from 'rxjs';
 import { User } from './user';
 
 @API.Resource('todos')
 export class Todo
 {
-  @API.Property({input: false})
+  @API.Identifier()
+  @API.Output()
   id: number;
 
-  @API.Property()
+  @API.Input()
+  @API.Output()
   title: string;
 
-  @API.Property()
+  @API.Input()
+  @API.Output()
   completed: boolean;
 
-  @API.Property('userId')
+  @API.Property({name: 'userId'})
+  @API.Input()
+  @API.Output()
   @API.SubResource(() => User)
   user: Observable<User>;
 }
