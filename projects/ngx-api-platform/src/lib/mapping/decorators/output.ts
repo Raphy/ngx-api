@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { OutputMetadata } from '../metadata';
-import { OutputOptions } from '../options';
-import { addOutputMetadata, getPropertyMetadata } from '../utilities';
+import { OutputMetadata } from '../metadata/output-metadata';
+import { OutputOptions } from '../options/output-options';
+import { addOutputMetadata, getPropertyMetadata } from '../utilities/metadata';
 import { Property } from './property';
 
 /**

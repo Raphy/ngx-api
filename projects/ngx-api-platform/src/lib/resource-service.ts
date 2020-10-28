@@ -3,12 +3,15 @@ import { Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import {
-  getIdentifierMetadata, getInputsMetadata, getOutputsMetadata,
+  getIdentifierMetadata,
+  getInputsMetadata,
+  getOutputsMetadata,
   getPropertiesMetadata,
   getResourceMetadata,
   getSubCollectionsMetadata,
-  getSubResourcesMetadata, validateMetadata,
-} from './mapping/utilities';
+  getSubResourcesMetadata,
+  validateMetadata,
+} from './mapping/utilities/metadata';
 import { ResourceServiceOptions } from './resource-service-options';
 
 /**
@@ -59,7 +62,7 @@ export class ResourceService<TResource> {
   }
 
   getResource(identifierOrIri: string | number, options?: ResourceServiceOptions): Observable<TResource> {
-    return of(null);
+    return of({id: identifierOrIri} as any);
   }
 
   getCollection(options?: ResourceServiceOptions): Observable<any> {

@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { IdentifierMetadata } from '../metadata';
-import { IdentifierOptions } from '../options';
-import { addIdentifierMetadata, getPropertyMetadata } from '../utilities';
+import { IdentifierMetadata } from '../metadata/identifier-metadata';
+import { IdentifierOptions } from '../options/identifier-options';
+import { addIdentifierMetadata, getPropertyMetadata } from '../utilities/metadata';
 import { Property } from './property';
 
 /**

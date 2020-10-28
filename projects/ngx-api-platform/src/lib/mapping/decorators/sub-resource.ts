@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { SubResourceMetadata } from '../metadata';
-import { SubResourceOptions } from '../options';
-import { addSubResourceMetadata, getPropertyMetadata } from '../utilities';
+import { SubResourceMetadata } from '../metadata/sub-resource-metadata';
+import { SubResourceOptions } from '../options/sub-resource-options';
+import { addSubResourceMetadata, getPropertyMetadata } from '../utilities/metadata';
 import { Property } from './property';
 
 /**

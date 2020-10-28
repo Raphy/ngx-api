@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { InputMetadata } from '../metadata';
-import { InputOptions } from '../options';
-import { addInputMetadata, getPropertyMetadata } from '../utilities';
+import { InputMetadata } from '../metadata/input-metadata';
+import { InputOptions } from '../options/input-options';
+import { addInputMetadata, getPropertyMetadata } from '../utilities/metadata';
 import { Property } from './property';
 
 /**

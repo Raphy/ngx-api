@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { PropertyMetadata } from '../metadata';
-import { PropertyOptions } from '../options';
-import { addPropertyMetadata } from '../utilities';
+import { PropertyMetadata } from '../metadata/property-metadata';
+import { PropertyOptions } from '../options/property-options';
+import { addPropertyMetadata } from '../utilities/metadata';
 
 /**
  * Defines a resource property.
@@ -44,6 +44,7 @@ export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions 
       typeof nameOrOptions === 'string' ? {name: nameOrOptions} : nameOrOptions || {},
       maybeOptions || {},
     );
+    options.name = options.name || propertyName;
 
     options.type = options.type || Reflect.getMetadata('design:type', target, propertyName);
     if (!options.type) {

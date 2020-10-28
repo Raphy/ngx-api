@@ -1,7 +1,7 @@
 import { ApiPlatformError } from '../../errors/api-platform-error';
 
-export class MappingError extends ApiPlatformError {
+export class SerializerError extends ApiPlatformError {
   constructor(message?: string) {
-    super(`[Mapping] ${ message }`);
+    super(`[Serializer] ${ message }`);
   }
 }

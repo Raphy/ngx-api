@@ -1,15 +1,14 @@
 import { Type } from '@angular/core';
-import { ClassMetadataError, PropertyMetadataError } from '../errors';
-import {
-  IdentifierMetadata,
-  InputMetadata,
-  MetadataKey,
-  OutputMetadata,
-  PropertyMetadata,
-  ResourceMetadata,
-  SubCollectionMetadata,
-  SubResourceMetadata,
-} from '../metadata';
+import { ClassMetadataError } from '../errors/class-metadata-error';
+import { PropertyMetadataError } from '../errors/property-metadata-error';
+import { IdentifierMetadata } from '../metadata/identifier-metadata';
+import { InputMetadata } from '../metadata/input-metadata';
+import { MetadataKey } from '../metadata/metadata-key';
+import { OutputMetadata } from '../metadata/output-metadata';
+import { PropertyMetadata } from '../metadata/property-metadata';
+import { ResourceMetadata } from '../metadata/resource-metadata';
+import { SubCollectionMetadata } from '../metadata/sub-collection-metadata';
+import { SubResourceMetadata } from '../metadata/sub-resource-metadata';
 
 const targetsAlreadyValidated = [];
 

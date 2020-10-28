@@ -1,5 +1,5 @@
 import { Type } from '@angular/core';
-import { SubResourceOptions } from '../options';
+import { SubResourceOptions } from '../options/sub-resource-options';
 
 export interface SubResourceMetadata {
   target: Type<any>;

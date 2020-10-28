@@ -1,7 +1,7 @@
 import { Type } from '@angular/core';
-import { ResourceMetadata } from '../metadata';
-import { ResourceOptions } from '../options';
-import { addResourceMetadata } from '../utilities';
+import { ResourceMetadata } from '../metadata/resource-metadata';
+import { ResourceOptions } from '../options/resource-options';
+import { addResourceMetadata } from '../utilities/metadata';
 
 /**
  * Defines a resource.
