@@ -10,5 +10,5 @@ export interface SubResourceOptions {
   /**
    * The options passed to ResourceService::getResource().
    */
-  resourceServiceOptions?: ResourceServiceOptions | ((resource: Object, body: object) => ResourceServiceOptions);
+  resourceServiceOptions?: ResourceServiceOptions | ((resource?: Object) => ResourceServiceOptions);
 }

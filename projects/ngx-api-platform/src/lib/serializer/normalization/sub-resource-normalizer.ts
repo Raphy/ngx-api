@@ -1,44 +1,63 @@
 import { Injectable, Injector, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Denormalizer } from './denormalizer';
-import { Normalizer } from './normalizer';
+import { map, switchMap } from 'rxjs/operators';
+import { Denormalizer, DenormalizerContext } from './denormalizer';
+import { Normalizer, NormalizerContext } from './normalizer';
 import { ResourceService, ResourceServiceTokenFor } from '../../resource-service';
-import { getIdentifierMetadata, getResourceMetadata } from '../../utilities/metadata';
+import { getIdentifierMetadata, getResourceMetadata, getSubResourceMetadata } from '../../utilities/metadata';
 
 @Injectable()
 export class SubResourceNormalizer implements Normalizer, Denormalizer {
   constructor(private injector: Injector) {
   }
 
-  denormalize(value: object, type: Function): Observable<any> {
-    console.log(`[${ this.constructor.name }::denormalize()]`, {value, type});
-    return of(this.injector.get<ResourceService<any>>(ResourceServiceTokenFor(type as Type<any>))
-      .getResource(value as any))
+  private getResourceService(type: Type<any>): ResourceService<any> {
+    return this.injector.get<ResourceService<any>>(ResourceServiceTokenFor(type as Type<any>));
+  }
+
+  denormalize(value: object, type: Function, context?: DenormalizerContext): Observable<any> {
+    const subResourceMetadata = getSubResourceMetadata(context.type as Type<any>, context.propertyName);
+
+    const resourceServiceOptions = typeof subResourceMetadata.options.resourceServiceOptions === 'function'
+      ? subResourceMetadata.options.resourceServiceOptions(context.value)
+      : subResourceMetadata.options.resourceServiceOptions;
+
+    return of(this.getResourceService(type as Type<any>).getResource(value as any, resourceServiceOptions));
+  }
+
+  normalize(value: Object, type: Function, context?: NormalizerContext): Observable<any> {
+    return (value instanceof Observable ? value as Observable<Object> : of(value))
+      .pipe(
+        map((resource: Object) => {
+          const identifierMetadata = getIdentifierMetadata(type as Type<any>);
+
+          // TODO: handle IRI
+
+          return resource[identifierMetadata.propertyName] as any;
+        }),
+      )
       ;
   }
 
-  normalize(value: Type<any>, type: Function): Observable<any> {
-    console.log(`[${ this.constructor.name }::normalize()]`, {value, type});
-
-
-    return ((value instanceof Observable ? value as Observable<object> : of(value)) as Observable<object>)
-      .pipe(
-        map((resource: object) => {
-          const resourceMetadata = getResourceMetadata(type as Type<any>);
-          const identifierMetadata = getIdentifierMetadata(type as Type<any>);
-
-          return `/${ resourceMetadata.options.endpoint }/${ resource[identifierMetadata.propertyName] }`;
-        }),
-      )
-    ;
+  supportsDenormalization(value: any, type: Function, context?: DenormalizerContext): boolean {
+    return !!value
+      && Object(value) !== value
+      && !!getResourceMetadata(type as Type<any>)
+      && context
+      && context.type
+      && context.propertyName
+      && !!getSubResourceMetadata(context.type as Type<any>, context.propertyName)
+      ;
   }
 
-  supportsDenormalization(value: any, type: Function): boolean {
-    return !!value && Object(value) !== value && !!getResourceMetadata(type as Type<any>);
-  }
-
-  supportsNormalization(value: any, type: Function): boolean {
-    return !!value && (value instanceof type || value instanceof Observable) && !!getResourceMetadata(type as Type<any>);
+  supportsNormalization(value: any, type: Function, context ?: NormalizerContext): boolean {
+    return !!value
+      && (value instanceof type || value instanceof Observable)
+      && !!getResourceMetadata(type as Type<any>)
+      && context
+      && context.type
+      && context.propertyName
+      && !!getSubResourceMetadata(context.type as Type<any>, context.propertyName)
+      ;
   }
 }

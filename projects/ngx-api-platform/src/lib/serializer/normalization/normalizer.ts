@@ -3,8 +3,18 @@ import { Observable } from 'rxjs';
 
 export const API_PLATFORM_NORMALIZERS = new InjectionToken<Array<Normalizer>>('API_PLATFORM_NORMALIZERS');
 
-export interface Normalizer {
-  supportsNormalization(value: any, type: Function): boolean;
+export interface NormalizerContext {
+  parentContext?: NormalizerContext;
 
-  normalize(value: any, type: Function): Observable<any>;
+  value?: any;
+
+  type?: Function;
+
+  propertyName?: string;
+}
+
+export interface Normalizer {
+  supportsNormalization(value: any, type: Function, context?: NormalizerContext): boolean;
+
+  normalize(value: any, type: Function, context?: NormalizerContext): Observable<any>;
 }

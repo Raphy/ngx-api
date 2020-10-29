@@ -3,8 +3,18 @@ import { Observable } from 'rxjs';
 
 export const API_PLATFORM_DENORMALIZERS = new InjectionToken<Array<Denormalizer>>('API_PLATFORM_DENORMALIZERS');
 
-export interface Denormalizer {
-  supportsDenormalization(value: any, type: Function): boolean;
+export interface DenormalizerContext {
+  parentContext?: DenormalizerContext;
 
-  denormalize(value: any, type: Function): Observable<any>;
+  value?: any;
+
+  type?: Function;
+
+  propertyName?: string;
+}
+
+export interface Denormalizer {
+  supportsDenormalization(value: any, type: Function, context?: DenormalizerContext): boolean;
+
+  denormalize(value: any, type: Function, context?: DenormalizerContext): Observable<any>;
 }

@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SerializerError } from './errors/serializer-error';
-import { API_PLATFORM_DENORMALIZERS, Denormalizer } from './normalization/denormalizer';
-import { API_PLATFORM_NORMALIZERS, Normalizer } from './normalization/normalizer';
+import { API_PLATFORM_DENORMALIZERS, Denormalizer, DenormalizerContext } from './normalization/denormalizer';
+import { API_PLATFORM_NORMALIZERS, Normalizer, NormalizerContext } from './normalization/normalizer';
 
 @Injectable()
 export class Serializer implements Normalizer, Denormalizer {
@@ -11,33 +11,35 @@ export class Serializer implements Normalizer, Denormalizer {
     @Inject(API_PLATFORM_NORMALIZERS) private normalizers: Array<Normalizer>,
     @Inject(API_PLATFORM_DENORMALIZERS) private denormalizers: Array<Denormalizer>,
   ) {
-    console.log(`[${ this.constructor.name }]`, {normalizers, denormalizers});
   }
 
-  // object
-  // string
-  // number
-  // ...
-  // array
+  denormalize(value: any, type: Function, context?: DenormalizerContext): Observable<any> {
+    context = context || {};
 
-  denormalize(value: any, type: Function): Observable<any> {
-    console.log(`[${ this.constructor.name }::denormalize()]`, {value, type});
-
-    const denormalizer = this.getDenormalizer(value, type);
+    const denormalizer = this.getDenormalizer(value, type, context);
     if (denormalizer) {
-      return denormalizer.denormalize(value, type);
+      return denormalizer.denormalize(value, type, context);
     }
 
     if (Object(value) !== value) {
       return of(value);
     }
 
-    if (type === Object) {
+    if (value.constructor === Object || type === Object) {
       const denormalized = {};
       const denormalizationObservables = [];
       for (const propertyName in value) {
         if (value.hasOwnProperty(propertyName)) {
-          const denormalizationObservable = this.denormalize(value[propertyName], value[propertyName].constructor);
+          const denormalizationObservable = this.denormalize(
+            value[propertyName],
+            value[propertyName].constructor,
+            {
+              parentContext: context,
+              value,
+              type,
+              propertyName,
+            },
+          );
           denormalizationObservables.push(
             denormalizationObservable.pipe(tap((denormalizedChild) => denormalized[propertyName] = denormalizedChild)),
           );
@@ -49,11 +51,19 @@ export class Serializer implements Normalizer, Denormalizer {
         : of(denormalized);
     }
 
-    if (type === Array) {
+    if (value.constructor === Array || type === Array) {
       const denormalized = [];
       const denormalizationObservables = [];
       for (const item of value) {
-        const denormalizationObservable = this.denormalize(item, item.constructor);
+        const denormalizationObservable = this.denormalize(
+          item,
+          type,
+          {
+            parentContext: context,
+            value,
+            type,
+          },
+        );
         denormalizationObservables.push(
           denormalizationObservable.pipe(tap((denormalizedChild) => denormalized.push(denormalizedChild))),
         );
@@ -67,24 +77,35 @@ export class Serializer implements Normalizer, Denormalizer {
     throw new SerializerError(`The value of type "${ type.name }" could not be denormalized because no supporting denormalizer found`);
   }
 
-  normalize(value: any, type: Function): Observable<any> {
-    console.log(`[${ this.constructor.name }::normalize()]`, {value, type});
+  normalize(value: any, type: Function, context?: NormalizerContext): Observable<any> {
+    context = context || {};
 
-    const normalizer = this.getNormalizer(value, type);
+    console.log('Serializer::normalize', {value, type, context});
+
+    const normalizer = this.getNormalizer(value, type, context);
     if (normalizer) {
-      return normalizer.normalize(value, type);
+      return normalizer.normalize(value, type, context);
     }
 
     if (Object(value) !== value) {
       return of(value);
     }
 
-    if (type === Object) {
+    if (value.constructor === Object || type === Object) {
       const normalized = {};
       const normalizationObservables = [];
       for (const propertyName in value) {
         if (value.hasOwnProperty(propertyName)) {
-          const normalizationObservable = this.normalize(value[propertyName], value[propertyName].constructor);
+          const normalizationObservable = this.normalize(
+            value[propertyName],
+            value[propertyName].constructor,
+            {
+              parentContext: context,
+              value,
+              type,
+              propertyName,
+            },
+          );
           normalizationObservables.push(
             normalizationObservable.pipe(tap((normalizedChild) => normalized[propertyName] = normalizedChild)),
           );
@@ -96,11 +117,19 @@ export class Serializer implements Normalizer, Denormalizer {
         : of(normalized);
     }
 
-    if (type === Array) {
+    if (value.constructor === Array || type === Array) {
       const normalized = [];
       const normalizationObservables = [];
       for (const item of value) {
-        const normalizationObservable = this.normalize(item, item.constructor);
+        const normalizationObservable = this.normalize(
+          item,
+          item.constructor,
+          {
+            parentContext: context,
+            value,
+            type,
+          },
+        );
         normalizationObservables.push(
           normalizationObservable.pipe(tap((normalizedChild) => normalized.push(normalizedChild))),
         );
@@ -114,17 +143,17 @@ export class Serializer implements Normalizer, Denormalizer {
     throw new SerializerError(`The value of type "${ type.name }" could not be normalized because no supporting normalizer found`);
   }
 
-  supportsDenormalization(value: any, type: Function): boolean {
-    return !!this.getDenormalizer(value, type);
+  supportsDenormalization(value: any, type: Function, context?: DenormalizerContext): boolean {
+    return !!this.getDenormalizer(value, type, context);
   }
 
-  supportsNormalization(value: any, type: Function): boolean {
-    return !!this.getNormalizer(value, type);
+  supportsNormalization(value: any, type: Function, context?: NormalizerContext): boolean {
+    return !!this.getNormalizer(value, type, context);
   }
 
-  private getNormalizer(value: any, type: Function): Normalizer {
+  private getNormalizer(value: any, type: Function, context?: NormalizerContext): Normalizer {
     for (const normalizer of this.normalizers) {
-      if (normalizer.supportsNormalization(value, type)) {
+      if (normalizer.supportsNormalization(value, type, context)) {
         return normalizer;
       }
     }
@@ -132,10 +161,9 @@ export class Serializer implements Normalizer, Denormalizer {
     return undefined;
   }
 
-
-  private getDenormalizer(value: any, type: Function): Denormalizer {
+  private getDenormalizer(value: any, type: Function, context?: DenormalizerContext): Denormalizer {
     for (const denormalizer of this.denormalizers) {
-      if (denormalizer.supportsDenormalization(value, type)) {
+      if (denormalizer.supportsDenormalization(value, type, context)) {
         return denormalizer;
       }
     }

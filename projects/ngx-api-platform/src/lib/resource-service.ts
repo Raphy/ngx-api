@@ -1,7 +1,17 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, InjectionToken, Injector, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { filter, map, share, switchMap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
+import { IdentifierMetadata } from './mapping/metadata/identifier-metadata';
+import { InputMetadata } from './mapping/metadata/input-metadata';
+import { OutputMetadata } from './mapping/metadata/output-metadata';
+import { PropertyMetadata } from './mapping/metadata/property-metadata';
+import { ResourceMetadata } from './mapping/metadata/resource-metadata';
+import { SubCollectionMetadata } from './mapping/metadata/sub-collection-metadata';
+import { SubResourceMetadata } from './mapping/metadata/sub-resource-metadata';
+import { ResourceServiceOptions } from './resource-service-options';
+import { Serializer } from './serializer/serializer';
 import {
   getIdentifierMetadata,
   getInputsMetadata,
@@ -12,7 +22,6 @@ import {
   getSubResourcesMetadata,
   validateMetadata,
 } from './utilities/metadata';
-import { ResourceServiceOptions } from './resource-service-options';
 
 /**
  * Stores the InjectionToken instances because they need to be "unique" across the application.
@@ -34,23 +43,30 @@ export function resourceServiceFactory<TResource>(target: Type<TResource>): Func
 
 @Injectable()
 export class ResourceService<TResource> {
+  private metadata: {
+    resource: ResourceMetadata;
+    properties: Array<PropertyMetadata>;
+    subResources: Array<SubResourceMetadata>;
+    subCollections: Array<SubCollectionMetadata>;
+    identifier: IdentifierMetadata;
+    inputs: Array<InputMetadata>;
+    outputs: Array<OutputMetadata>;
+  };
+
   constructor(private target: Type<TResource>, private injector: Injector) {
     if (this.config.resourceMappingValidation === 'enabled') {
       validateMetadata(target);
     }
 
-    console.log(
-      `${ this.constructor.name }`,
-      {
-        target,
-        resource: getResourceMetadata(target),
-        properties: getPropertiesMetadata(target),
-        subResources: getSubResourcesMetadata(target),
-        subCollections: getSubCollectionsMetadata(target),
-        identifier: getIdentifierMetadata(target),
-        inputs: getInputsMetadata(target),
-        outputs: getOutputsMetadata(target),
-      });
+    this.metadata = {
+      resource: getResourceMetadata(target),
+      properties: getPropertiesMetadata(target),
+      subResources: getSubResourcesMetadata(target),
+      subCollections: getSubCollectionsMetadata(target),
+      identifier: getIdentifierMetadata(target),
+      inputs: getInputsMetadata(target),
+      outputs: getOutputsMetadata(target),
+    };
   }
 
   private get config(): ApiPlatformConfig {
@@ -61,12 +77,64 @@ export class ResourceService<TResource> {
     return this.injector.get<HttpClient>(HttpClient);
   }
 
-  getResource(identifierOrIri: string | number, options?: ResourceServiceOptions): Observable<TResource> {
-    return of({id: identifierOrIri} as any);
+  private get serializer(): Serializer {
+    return this.injector.get<Serializer>(Serializer);
+  }
+
+  getResource(identifier: string | number, options?: ResourceServiceOptions): Observable<TResource> {
+    options = options || {};
+    options.request = options.request || {};
+    options.request.method = options.request.method || 'GET';
+    options.request.uri = options.request.uri || `/${ this.metadata.resource.options.endpoint }/${ identifier }`;
+    options.request.params = options.request.params || new HttpParams();
+    options.request.headers = options.request.headers || new HttpHeaders();
+
+    // TODO: handle IRI
+
+    const request: HttpRequest<object> = new HttpRequest<object>(
+      options.request.method as any,
+      `${ this.config.apiBaseUrl }${ options.request.uri }`,
+      {
+        params: options.request.params,
+        headers: options.request.headers,
+      },
+    );
+
+    return this.httpClient.request(request)
+      .pipe(
+        filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+        map((response: HttpResponse<any>) => response.body),
+        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function)),
+        share(),
+      )
+      ;
   }
 
   getCollection(options?: ResourceServiceOptions): Observable<any> {
-    return of(null);
+    options = options || {};
+    options.request = options.request || {};
+    options.request.method = options.request.method || 'GET';
+    options.request.uri = options.request.uri || `/${ this.metadata.resource.options.endpoint }`;
+    options.request.params = options.request.params || new HttpParams();
+    options.request.headers = options.request.headers || new HttpHeaders();
+
+    const request: HttpRequest<object> = new HttpRequest<object>(
+      options.request.method as any,
+      `${ this.config.apiBaseUrl }${ options.request.uri }`,
+      {
+        params: options.request.params,
+        headers: options.request.headers,
+      },
+    );
+
+    return this.httpClient.request(request)
+      .pipe(
+        filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+        map((response: HttpResponse<any>) => response.body),
+        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function)),
+        share(),
+      )
+      ;
   }
 
   persist(resource: TResource, options?: ResourceServiceOptions): Observable<TResource> {

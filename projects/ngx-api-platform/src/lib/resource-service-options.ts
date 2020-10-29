@@ -8,7 +8,7 @@ export interface ResourceServiceOptions {
     /**
      * The method of the request. The method will override the defined one.
      */
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    method?: string;
 
     /**
      * The URI of the request, if not set, it will guess it.

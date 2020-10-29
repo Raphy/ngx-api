@@ -1,8 +1,8 @@
 import { Injectable, Injector, Type } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Denormalizer } from './denormalizer';
-import { Normalizer } from './normalizer';
+import { Denormalizer, DenormalizerContext } from './denormalizer';
+import { Normalizer, NormalizerContext } from './normalizer';
 import { Serializer } from '../serializer';
 import {
   getInputsMetadata,
@@ -21,7 +21,7 @@ export class ResourceNormalizer implements Normalizer, Denormalizer {
   constructor(private injector: Injector) {
   }
 
-  denormalize(value: object, type: Function): Observable<any> {
+  denormalize(value: object, type: Function, context?: DenormalizerContext): Observable<any> {
     const resource = Reflect.construct(type, []);
     const denormalizationObservables = [];
 
@@ -34,6 +34,12 @@ export class ResourceNormalizer implements Normalizer, Denormalizer {
         this.serializer.denormalize(
           value[propertyMetadata.options.name],
           subResourceMetadata ? subResourceMetadata.options.type() as Function : propertyMetadata.options.type,
+          {
+            parentContext: context,
+            value,
+            type,
+            propertyName: propertyMetadata.propertyName,
+          },
         )
           .pipe(
             tap((denormalizedChild) => resource[propertyMetadata.propertyName] = denormalizedChild),
@@ -46,7 +52,7 @@ export class ResourceNormalizer implements Normalizer, Denormalizer {
       : of(resource);
   }
 
-  normalize(value: Type<any>, type: Function): Observable<object> {
+  normalize(value: Type<any>, type: Function, context?: NormalizerContext): Observable<object> {
     const object = {};
     const normalizationObservables = [];
 
@@ -59,6 +65,12 @@ export class ResourceNormalizer implements Normalizer, Denormalizer {
         this.serializer.normalize(
           value[propertyMetadata.propertyName],
           subResourceMetadata ? subResourceMetadata.options.type() as Function : propertyMetadata.options.type,
+          {
+            parentContext: context,
+            value,
+            type,
+            propertyName: propertyMetadata.propertyName,
+          },
         )
           .pipe(
             tap((normalizedChild) => object[propertyMetadata.options.name] = normalizedChild),
@@ -72,10 +84,16 @@ export class ResourceNormalizer implements Normalizer, Denormalizer {
   }
 
   supportsDenormalization(value: any, type: Function): boolean {
-    return !!value && typeof value === 'object' && !!getResourceMetadata(type as Type<any>);
+    return !!value
+      && value.constructor === Object
+      && !!getResourceMetadata(type as Type<any>)
+      ;
   }
 
   supportsNormalization(value: any, type: Function): boolean {
-    return !!value && value instanceof type && !!getResourceMetadata(type as Type<any>);
+    return !!value
+      && value instanceof type
+      && !!getResourceMetadata(type as Type<any>)
+      ;
   }
 }

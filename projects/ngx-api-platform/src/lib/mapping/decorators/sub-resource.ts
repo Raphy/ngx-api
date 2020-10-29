@@ -40,6 +40,7 @@ export function SubResource(typeOrOptions: (() => Type<any>) | SubResourceOption
       type: (typeof typeOrOptions === 'function' ? typeOrOptions : typeOrOptions.type),
     };
     Object.assign(options, maybeOptions || {});
+    options.resourceServiceOptions = options.resourceServiceOptions || {};
 
     const metadata: SubResourceMetadata = {
       target: target.constructor as Type<any>,
