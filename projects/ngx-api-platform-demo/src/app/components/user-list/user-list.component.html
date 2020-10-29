@@ -1,40 +1,40 @@
-<!--<nav aria-label="breadcrumb">-->
-<!--  <ol class="breadcrumb">-->
-<!--    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>-->
-<!--    <li class="breadcrumb-item active">Users</li>-->
-<!--  </ol>-->
-<!--</nav>-->
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+    <li class="breadcrumb-item active">Users</li>
+  </ol>
+</nav>
 
-<!--<div class="container">-->
-<!--  <div class="row">-->
-<!--    <div class="col">-->
+<div class="container">
+  <div class="row">
+    <div class="col">
 
-<!--      <h1>Users</h1>-->
+      <h1>Users</h1>
 
-<!--      <table class="table table-bordered table-hover">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--          <th scope="col">ID</th>-->
-<!--          <th scope="col">Username</th>-->
-<!--          <th scope="col">Name</th>-->
-<!--          <th scope="col"></th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr *ngFor="let user of users">-->
-<!--          <th scope="row">{{ user.id }}</th>-->
-<!--          <td>{{ user.username }}</td>-->
-<!--          <td>{{ user.name }}</td>-->
-<!--          <td>-->
-<!--            <a class="btn btn-primary" [routerLink]="['/', 'users', user.id.toString()]">-->
-<!--              <fa-icon [icon]="['fas', 'eye']"></fa-icon>-->
-<!--              View-->
-<!--            </a>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
+      <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Username</th>
+          <th scope="col">Name</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+          <th scope="row">{{ user.id }}</th>
+          <td>{{ user.username }}</td>
+          <td>{{ user.name }}</td>
+          <td>
+            <a class="btn btn-primary" [routerLink]="['/', 'users', user.id.toString()]">
+              <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+              View
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
+    </div>
+  </div>
+</div>

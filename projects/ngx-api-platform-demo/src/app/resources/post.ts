@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Identifier, Input, Output, Property, Resource, SubCollection, SubResource } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Comment } from './comment';
@@ -21,7 +22,11 @@ export class Post {
   @Property('userId')
   @Input()
   @Output()
-  @SubResource(() => User)
+  @SubResource(() => User, {
+    resourceServiceOptions: (resource: Post) => {
+      return ({request: {params: new HttpParams({fromObject: {test: resource.title}})}});
+    }}
+    )
   user: Observable<User>;
 
   @SubCollection(() => Comment)
