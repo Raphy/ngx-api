@@ -1,4 +1,4 @@
-import { ApiPlatformError } from '../../errors/api-platform-error';
+import { ApiPlatformError } from '../../errors';
 
 export class SerializerError extends ApiPlatformError {
   constructor(message?: string) {

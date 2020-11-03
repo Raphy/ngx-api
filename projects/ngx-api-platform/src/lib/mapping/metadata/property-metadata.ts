@@ -1,8 +1,7 @@
-import { Type } from '@angular/core';
-import { PropertyOptions } from '../options/property-options';
+import { PropertyOptions } from '../options';
 
 export interface PropertyMetadata {
-  target: Type<any>;
+  target: Function;
 
   propertyName: string;
 

@@ -10,5 +10,5 @@ export interface SubCollectionOptions {
   /**
    * The options passed to ResourceService::getCollection().
    */
-  resourceServiceOptions?: ResourceServiceOptions | ((resource: Object, body: object) => ResourceServiceOptions);
+  resourceServiceOptions?: ResourceServiceOptions | ((resource: Object) => ResourceServiceOptions);
 }

@@ -1,18 +1,16 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable, InjectionToken, Injector, Type } from '@angular/core';
+import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { filter, map, share, switchMap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
-import { IdentifierMetadata } from './mapping/metadata/identifier-metadata';
-import { InputMetadata } from './mapping/metadata/input-metadata';
-import { OutputMetadata } from './mapping/metadata/output-metadata';
-import { PropertyMetadata } from './mapping/metadata/property-metadata';
-import { ResourceMetadata } from './mapping/metadata/resource-metadata';
-import { SubCollectionMetadata } from './mapping/metadata/sub-collection-metadata';
-import { SubResourceMetadata } from './mapping/metadata/sub-resource-metadata';
-import { ResourceServiceOptions } from './resource-service-options';
-import { Serializer } from './serializer/serializer';
 import {
+  IdentifierMetadata,
+  InputMetadata,
+  OutputMetadata,
+  PropertyMetadata,
+  ResourceMetadata,
+  SubCollectionMetadata,
+  SubResourceMetadata,
   getIdentifierMetadata,
   getInputsMetadata,
   getOutputsMetadata,
@@ -21,14 +19,16 @@ import {
   getSubCollectionsMetadata,
   getSubResourcesMetadata,
   validateMetadata,
-} from './utilities/metadata';
+} from './mapping';
+import { ResourceServiceOptions } from './resource-service-options';
+import { Serializer } from './serialization';
 
 /**
  * Stores the InjectionToken instances because they need to be "unique" across the application.
  */
 const injectionTokens: { [description: string]: InjectionToken<any> } = {};
 
-export function ResourceServiceTokenFor<TResource>(target: Type<TResource>): InjectionToken<TResource> {
+export function ResourceServiceTokenFor<TResource>(target: Function): InjectionToken<TResource> {
   const description = `API_PLATFORM_RESOURCE_SERVICE_${ target.name }`;
   if (!injectionTokens.hasOwnProperty(description)) {
     injectionTokens[description] = new InjectionToken<TResource>(description);
@@ -37,7 +37,7 @@ export function ResourceServiceTokenFor<TResource>(target: Type<TResource>): Inj
   return injectionTokens[description];
 }
 
-export function resourceServiceFactory<TResource>(target: Type<TResource>): Function {
+export function resourceServiceFactory<TResource>(target: Function): Function {
   return (injector: Injector) => new ResourceService<TResource>(target, injector);
 }
 
@@ -53,7 +53,7 @@ export class ResourceService<TResource> {
     outputs: Array<OutputMetadata>;
   };
 
-  constructor(private target: Type<TResource>, private injector: Injector) {
+  constructor(private target: Function, private injector: Injector) {
     if (this.config.resourceMappingValidation === 'enabled') {
       validateMetadata(target);
     }

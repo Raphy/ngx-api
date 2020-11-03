@@ -17,6 +17,7 @@
     "no-empty-interface": {
       "severity": "warning"
     },
-    "ban-types": false
+    "ban-types": false,
+    "no-string-literal": false
   }
 }

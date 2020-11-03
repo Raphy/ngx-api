@@ -1,8 +1,7 @@
-import { Type } from '@angular/core';
-import { ResourceOptions } from '../options/resource-options';
+import { ResourceOptions } from '../options';
 
 export interface ResourceMetadata {
-  target: Type<any>;
+  target: Function;
 
   options: ResourceOptions;
 }

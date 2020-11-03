@@ -1,18 +1,18 @@
-import { Type } from '@angular/core';
-import { ClassMetadataError } from '../mapping/errors/class-metadata-error';
-import { PropertyMetadataError } from '../mapping/errors/property-metadata-error';
-import { IdentifierMetadata } from '../mapping/metadata/identifier-metadata';
-import { InputMetadata } from '../mapping/metadata/input-metadata';
-import { MetadataKey } from '../mapping/metadata/metadata-key';
-import { OutputMetadata } from '../mapping/metadata/output-metadata';
-import { PropertyMetadata } from '../mapping/metadata/property-metadata';
-import { ResourceMetadata } from '../mapping/metadata/resource-metadata';
-import { SubCollectionMetadata } from '../mapping/metadata/sub-collection-metadata';
-import { SubResourceMetadata } from '../mapping/metadata/sub-resource-metadata';
+import { ClassMetadataError, PropertyMetadataError } from '../errors';
+import {
+  IdentifierMetadata,
+  InputMetadata,
+  MetadataKey,
+  OutputMetadata,
+  PropertyMetadata,
+  ResourceMetadata,
+  SubCollectionMetadata,
+  SubResourceMetadata,
+} from '../metadata';
 
 const targetsAlreadyValidated = [];
 
-export function validateMetadata(target: Type<any>): void {
+export function validateMetadata(target: Function): void {
   // Avoid circular validation
   if (targetsAlreadyValidated.includes(target.name)) {
     return;
@@ -67,7 +67,7 @@ export function addResourceMetadata(metadata: ResourceMetadata): void {
   Reflect.defineMetadata(MetadataKey.Resource, metadata, metadata.target);
 }
 
-export function getResourceMetadata(target: Type<any>): ResourceMetadata {
+export function getResourceMetadata(target: Function): ResourceMetadata {
   return Reflect.getMetadata(MetadataKey.Resource, target);
 }
 
@@ -80,11 +80,11 @@ export function addPropertyMetadata(metadata: PropertyMetadata): void {
     metadata.target);
 }
 
-export function getPropertiesMetadata(target: Type<any>): Array<PropertyMetadata> {
+export function getPropertiesMetadata(target: Function): Array<PropertyMetadata> {
   return Reflect.getMetadata(MetadataKey.Properties, target) || [];
 }
 
-export function getPropertyMetadata(target: Type<any>, propertyName: string): PropertyMetadata {
+export function getPropertyMetadata(target: Function, propertyName: string): PropertyMetadata {
   return getPropertiesMetadata(target)
     .filter((v: PropertyMetadata) => v.propertyName === propertyName)
     .pop()
@@ -100,11 +100,11 @@ export function addSubResourceMetadata(metadata: SubResourceMetadata): void {
     metadata.target);
 }
 
-export function getSubResourcesMetadata(target: Type<any>): Array<SubResourceMetadata> {
+export function getSubResourcesMetadata(target: Function): Array<SubResourceMetadata> {
   return Reflect.getMetadata(MetadataKey.SubResources, target) || [];
 }
 
-export function getSubResourceMetadata(target: Type<any>, propertyName: string): SubResourceMetadata {
+export function getSubResourceMetadata(target: Function, propertyName: string): SubResourceMetadata {
   return getSubResourcesMetadata(target)
     .filter((v: SubResourceMetadata) => v.propertyName === propertyName)
     .pop()
@@ -120,11 +120,11 @@ export function addSubCollectionMetadata(metadata: SubCollectionMetadata): void 
     metadata.target);
 }
 
-export function getSubCollectionsMetadata(target: Type<any>): Array<SubCollectionMetadata> {
+export function getSubCollectionsMetadata(target: Function): Array<SubCollectionMetadata> {
   return Reflect.getMetadata(MetadataKey.SubCollections, target) || [];
 }
 
-export function getSubCollectionMetadata(target: Type<any>, propertyName: string): SubCollectionMetadata {
+export function getSubCollectionMetadata(target: Function, propertyName: string): SubCollectionMetadata {
   return getSubCollectionsMetadata(target)
     .filter((v: SubCollectionMetadata) => v.propertyName === propertyName)
     .pop()
@@ -135,7 +135,7 @@ export function addIdentifierMetadata(metadata: IdentifierMetadata): void {
   Reflect.defineMetadata(MetadataKey.Identifier, metadata, metadata.target);
 }
 
-export function getIdentifierMetadata(target: Type<any>): IdentifierMetadata {
+export function getIdentifierMetadata(target: Function): IdentifierMetadata {
   return Reflect.getMetadata(MetadataKey.Identifier, target);
 }
 
@@ -148,11 +148,11 @@ export function addInputMetadata(metadata: InputMetadata): void {
     metadata.target);
 }
 
-export function getInputsMetadata(target: Type<any>): Array<InputMetadata> {
+export function getInputsMetadata(target: Function): Array<InputMetadata> {
   return Reflect.getMetadata(MetadataKey.Inputs, target) || [];
 }
 
-export function getInputMetadata(target: Type<any>, propertyName: string): InputMetadata {
+export function getInputMetadata(target: Function, propertyName: string): InputMetadata {
   return getInputsMetadata(target)
     .filter((v: PropertyMetadata) => v.propertyName === propertyName)
     .pop()
@@ -168,11 +168,11 @@ export function addOutputMetadata(metadata: OutputMetadata): void {
     metadata.target);
 }
 
-export function getOutputsMetadata(target: Type<any>): Array<OutputMetadata> {
+export function getOutputsMetadata(target: Function): Array<OutputMetadata> {
   return Reflect.getMetadata(MetadataKey.Outputs, target) || [];
 }
 
-export function getOutputMetadata(target: Type<any>, propertyName: string): OutputMetadata {
+export function getOutputMetadata(target: Function, propertyName: string): OutputMetadata {
   return getOutputsMetadata(target)
     .filter((v: PropertyMetadata) => v.propertyName === propertyName)
     .pop()

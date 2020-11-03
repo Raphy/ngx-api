@@ -11,7 +11,7 @@ export interface ApiPlatformConfig {
   /**
    * The list of resources class to use.
    */
-  resources: Array<Type<any>>;
+  resources: Array<Function>;
 
   /**
    * The resource mapping validation is used for development purposes only.

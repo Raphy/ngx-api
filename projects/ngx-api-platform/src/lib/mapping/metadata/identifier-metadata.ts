@@ -1,8 +1,7 @@
-import { Type } from '@angular/core';
-import { IdentifierOptions } from '../options/identifier-options';
+import { IdentifierOptions } from '../options';
 
 export interface IdentifierMetadata {
-  target: Type<any>;
+  target: Function;
 
   propertyName: string;
 

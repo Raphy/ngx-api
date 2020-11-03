@@ -1,14 +1,25 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Injector, ModuleWithProviders, NgModule, Provider, Type } from '@angular/core';
+import { Injector, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import 'reflect-metadata';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import { resourceServiceFactory, ResourceServiceTokenFor } from './resource-service';
-import { DateNormalizer } from './serializer/normalization/date-normalizer';
-import { API_PLATFORM_DENORMALIZERS } from './serializer/normalization/denormalizer';
-import { API_PLATFORM_NORMALIZERS } from './serializer/normalization/normalizer';
-import { ResourceNormalizer } from './serializer/normalization/resource-normalizer';
-import { SubResourceNormalizer } from './serializer/normalization/sub-resource-normalizer';
-import { Serializer } from './serializer/serializer';
+import { API_PLATFORM_DENORMALIZERS, API_PLATFORM_NORMALIZERS, DateNormalizer, Serializer } from './serialization';
+
+const SerializationNormalizerProviders = [
+  {
+    provide: API_PLATFORM_NORMALIZERS,
+    multi: true,
+    useClass: DateNormalizer,
+  },
+];
+
+const SerializationDenormalizerProviders = [
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: DateNormalizer,
+  },
+];
 
 // @dynamic
 @NgModule({
@@ -20,39 +31,8 @@ import { Serializer } from './serializer/serializer';
     {
       provide: Serializer,
     },
-
-    {
-      provide: API_PLATFORM_NORMALIZERS,
-      multi: true,
-      useClass: DateNormalizer,
-    },
-    {
-      provide: API_PLATFORM_NORMALIZERS,
-      multi: true,
-      useClass: ResourceNormalizer,
-    },
-    {
-      provide: API_PLATFORM_NORMALIZERS,
-      multi: true,
-      useClass: SubResourceNormalizer,
-    },
-
-
-    {
-      provide: API_PLATFORM_DENORMALIZERS,
-      multi: true,
-      useClass: DateNormalizer,
-    },
-    {
-      provide: API_PLATFORM_DENORMALIZERS,
-      multi: true,
-      useClass: SubResourceNormalizer,
-    },
-    {
-      provide: API_PLATFORM_DENORMALIZERS,
-      multi: true,
-      useClass: ResourceNormalizer,
-    },
+    ...SerializationDenormalizerProviders,
+    ...SerializationNormalizerProviders,
   ],
   exports: [],
 })
@@ -69,9 +49,9 @@ export class ApiPlatformModule {
           provide: API_PLATFORM_CONFIG,
           useValue: config,
         },
-        config.resources.map(<TResource extends object>(type: Type<any>): Provider => ({
-          provide: ResourceServiceTokenFor(type),
-          useFactory: resourceServiceFactory(type),
+        config.resources.map(<TResource>(type: Function): Provider => ({
+          provide: ResourceServiceTokenFor<TResource>(type),
+          useFactory: resourceServiceFactory<TResource>(type),
           deps: [Injector],
         })),
       ],

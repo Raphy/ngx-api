@@ -1,8 +1,7 @@
-import { Type } from '@angular/core';
-import { OutputOptions } from '../options/output-options';
+import { OutputOptions } from '../options';
 
 export interface OutputMetadata {
-  target: Type<any>;
+  target: Function;
 
   propertyName: string;
 
