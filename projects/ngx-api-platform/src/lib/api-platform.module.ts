@@ -1,30 +1,37 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Injector, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import 'reflect-metadata';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
-import { ApiService, ApiServiceTokenFor } from './api-service';
-import { API_PLATFORM_SERIALIZERS, DateSerializer, NativeSerializer, ResourceSerializer } from './serializer';
+import { resourceServiceFactory, ResourceServiceTokenFor } from './resource-service';
+import { API_PLATFORM_DENORMALIZERS, API_PLATFORM_NORMALIZERS, DateNormalizer, ResourceNormalizer, Serializer } from './serialization';
 
-function getApiServiceProviders(config: ApiPlatformConfig): Array<Provider> {
-  return config.resources.map((ResourceClass: Function) => (
-    {
-      provide: ApiServiceTokenFor(ResourceClass),
-      useFactory: (
-        config: ApiPlatformConfig,
-        httpClient: HttpClient,
-        resourceSerializer: ResourceSerializer,
-        injector: Injector,
-      ) => new ApiService(ResourceClass, config, httpClient, resourceSerializer, injector),
-      deps: [
-        API_PLATFORM_CONFIG,
-        HttpClient,
-        ResourceSerializer,
-        Injector,
-      ],
-    }
-  ));
-}
+const SerializationNormalizerProviders = [
+  {
+    provide: API_PLATFORM_NORMALIZERS,
+    multi: true,
+    useClass: DateNormalizer,
+  },
+  {
+    provide: API_PLATFORM_NORMALIZERS,
+    multi: true,
+    useClass: ResourceNormalizer,
+  },
+];
 
+const SerializationDenormalizerProviders = [
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: DateNormalizer,
+  },
+  {
+    provide: API_PLATFORM_DENORMALIZERS,
+    multi: true,
+    useClass: ResourceNormalizer,
+  },
+];
+
+// @dynamic
 @NgModule({
   declarations: [],
   imports: [
@@ -32,26 +39,19 @@ function getApiServiceProviders(config: ApiPlatformConfig): Array<Provider> {
   ],
   providers: [
     {
-      provide: ResourceSerializer,
+      provide: Serializer,
     },
-    {
-      provide: API_PLATFORM_SERIALIZERS,
-      multi: true,
-      useClass: DateSerializer,
-    },
-    {
-      provide: API_PLATFORM_SERIALIZERS,
-      multi: true,
-      useClass: NativeSerializer,
-    },
-    {
-      provide: ResourceSerializer,
-    },
+    ...SerializationDenormalizerProviders,
+    ...SerializationNormalizerProviders,
   ],
   exports: [],
 })
 export class ApiPlatformModule {
-  static forRoot(config: ApiPlatformConfig): ModuleWithProviders<ApiPlatformModule> {
+  static forRoot(
+    config: ApiPlatformConfig,
+  ): ModuleWithProviders<ApiPlatformModule> {
+    config.resourceMappingValidation = config.resourceMappingValidation === undefined ? 'enabled' : 'disabled';
+
     return {
       ngModule: ApiPlatformModule,
       providers: [
@@ -59,7 +59,11 @@ export class ApiPlatformModule {
           provide: API_PLATFORM_CONFIG,
           useValue: config,
         },
-        ...getApiServiceProviders(config),
+        config.resources.map(<TResource>(type: Function): Provider => ({
+          provide: ResourceServiceTokenFor<TResource>(type),
+          useFactory: resourceServiceFactory<TResource>(type),
+          deps: [Injector],
+        })),
       ],
     };
   }

@@ -6,7 +6,7 @@ A demonstration application is available at https://raphy.github.io/ngx-api-plat
 
 # Installation
 
-## With Angular Schematics
+## With Angular Schematics (Work In Progress)
 Just run the following command:
 
 ```
@@ -29,4 +29,3 @@ ApiPlatformModule.forRoot({
   resources: [User, Post, ProfilePhoto], // Set the mapped resources
 })
 ```
-

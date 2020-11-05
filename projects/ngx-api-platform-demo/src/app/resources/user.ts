@@ -1,43 +1,54 @@
-import * as API from 'ngx-api-platform/decorators';
+import { HttpParams } from '@angular/common/http';
+import { Identifier, Input, Output, Resource, SubCollection } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Album } from './album';
 import { Post } from './post';
 import { Todo } from './todo';
 
-@API.Resource('users')
+@Resource('users')
 export class User {
-  @API.Property({input: false})
+  @Identifier()
+  @Output()
   id: number;
 
-  @API.Property()
+  @Input()
+  @Output()
   name: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   username: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   email: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   website: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   phone: string;
 
-  @API.SubCollection(() => Post)
+  @SubCollection({
+    type: () => Post,
+  })
   posts: Observable<Array<Post>>;
 
-  @API.SubCollection(
+  @SubCollection(
     () => Todo,
     {
-      apiServiceCollectionOptions: (resource: User) => ({
-        endpoint: '/todos',
-        params: {userId: `${ resource.id }`},
+      resourceServiceOptions: (resource: User) => ({
+        request: {
+          uri: '/todos',
+          params: new HttpParams({fromObject: {userId: `${ resource.id }`}}),
+        },
       }),
     },
   )
   todos: Observable<Array<Todo>>;
 
-  @API.SubCollection(() => Album)
+  @SubCollection(() => Album)
   albums: Observable<Array<Album>>;
 }

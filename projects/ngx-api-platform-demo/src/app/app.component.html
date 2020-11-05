@@ -1,17 +1,14 @@
 <nav class="navbar navbar-expand navbar-dark bg-primary">
   <div class="navbar-collapse collapse w-100 order-1 order-md-0">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'users']">Users</a>
+      <li class="nav-item" [class.active]="router.isActive('/', true)">
+        <a class="nav-link" [routerLink]="['/']">Home</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'posts']">Posts</a>
+      <li class="nav-item" [class.active]="router.isActive('/documentation', false)">
+        <a class="nav-link" [routerLink]="['/', 'documentation']">Documentation</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'albums']">Albums</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/', 'todos']">Todos</a>
+      <li class="nav-item" [class.active]="router.isActive('/examples', false)">
+        <a class="nav-link" [routerLink]="['/', 'examples']">Examples</a>
       </li>
     </ul>
   </div>

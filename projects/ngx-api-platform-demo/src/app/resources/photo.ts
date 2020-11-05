@@ -1,23 +1,29 @@
-import * as API from 'ngx-api-platform/decorators';
+import { Identifier, Input, Output, Property, Resource, SubResource } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Album } from './album';
 
-@API.Resource('photos')
+@Resource('photos', {})
 export class Photo
 {
-  @API.Property({input: false})
+  @Identifier()
+  @Output()
   id: number;
 
-  @API.Property()
+  @Input()
+  @Output()
   title: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   url: string;
 
-  @API.Property()
+  @Input()
+  @Output()
   thumbnailUrl: string;
 
-  @API.Property('albumId')
-  @API.SubResource(() => Album)
+  @Property('albumId')
+  @Input()
+  @Output()
+  @SubResource(() => Album)
   album: Observable<Album>;
 }
