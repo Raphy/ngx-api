@@ -6,7 +6,7 @@ A demonstration application is available at https://raphy.github.io/ngx-api-plat
 
 # Installation
 
-## With Angular Schematics
+## With Angular Schematics (Work In Progress)
 Just run the following command:
 
 ```
@@ -29,29 +29,3 @@ ApiPlatformModule.forRoot({
   resources: [User, Post, ProfilePhoto], // Set the mapped resources
 })
 ```
-
-{
-    userId: 1,
-    title: "toto",
-    createdAt: "2020-10-28T01:00:42+02:00"
-}
-
-{
-    user: Observable<User>,
-    title: "toto",
-    createdAt: Date,
-}
-
-Normalizer
-    normalize(value: any, type: Function): Observable<any>;
-    supports(type: Function): bool;
-    
-Denormalizer
-    denormalize(value: any, type: Function): Observable<any>;
-    supports(type: Function): bool;
-
-ResourceNormalizer: Normalizer, Denormalizer
-    normalize(value: Object, type: Type<any>): Observable<object>;
-    denormalize(value: object, type: Type<any>): Observable<Object>;
-    supports(type: Type<any>): bool;
-

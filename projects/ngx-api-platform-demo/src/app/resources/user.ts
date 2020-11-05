@@ -41,7 +41,7 @@ export class User {
     {
       resourceServiceOptions: (resource: User) => ({
         request: {
-          uri: 'todos',
+          uri: '/todos',
           params: new HttpParams({fromObject: {userId: `${ resource.id }`}}),
         },
       }),

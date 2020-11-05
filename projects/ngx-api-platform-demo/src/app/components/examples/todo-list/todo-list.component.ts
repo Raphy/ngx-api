@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
-import { Todo } from '../../resources/todo';
+import { Todo } from '../../../resources/todo';
 
 @Component({
   selector: 'app-todo-list',

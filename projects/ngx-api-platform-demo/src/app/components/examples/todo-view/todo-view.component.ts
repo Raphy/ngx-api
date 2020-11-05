@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Todo } from '../../resources/todo';
+import { Todo } from '../../../resources/todo';
 
 @Component({
   selector: 'app-todo-view',

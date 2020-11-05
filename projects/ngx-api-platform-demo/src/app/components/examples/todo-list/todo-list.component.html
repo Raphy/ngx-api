@@ -1,30 +1,25 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-    <li class="breadcrumb-item active">Posts</li>
-  </ol>
-</nav>
-
 <div class="container">
   <div class="row">
     <div class="col">
 
-      <h1>Posts</h1>
+      <h1>Todos</h1>
 
       <table class="table table-bordered table-hover">
         <thead>
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Title</th>
+          <th scope="col">Completed</th>
           <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let post of posts">
-          <th scope="row">{{ post.id }}</th>
-          <td>{{ post.title }}</td>
+        <tr *ngFor="let todo of todos">
+          <th scope="row">{{ todo.id }}</th>
+          <td>{{ todo.title }}</td>
+          <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
           <td>
-            <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id.toString()]">
+            <a class="btn btn-primary" [routerLink]="['/', 'examples', 'todos', todo.id.toString()]">
               <fa-icon [icon]="['fas', 'eye']"></fa-icon>
               View
             </a>

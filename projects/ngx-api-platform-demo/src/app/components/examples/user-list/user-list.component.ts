@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
-import { User } from '../../resources/user';
+import { User } from '../../../resources/user';
 
 @Component({
   selector: 'app-user-list',

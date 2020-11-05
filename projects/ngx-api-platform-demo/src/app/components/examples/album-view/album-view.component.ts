@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Album } from '../../resources/album';
+import { Album } from '../../../resources/album';
 
 @Component({
   selector: 'app-album-view',

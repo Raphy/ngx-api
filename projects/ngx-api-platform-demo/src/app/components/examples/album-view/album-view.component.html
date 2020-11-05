@@ -1,11 +1,3 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-    <li class="breadcrumb-item"><a [routerLink]="['/', 'albums']">Albums</a></li>
-    <li class="breadcrumb-item active">{{ album?.title }}</li>
-  </ol>
-</nav>
-
 <div class="container">
   <div class="row">
     <div class="col">
@@ -16,7 +8,7 @@
         <div class="card-body">
           <h5 class="card-title">Details</h5>
           <div class="card-text">
-            <div><strong>Author: </strong> <a [routerLink]="['/', 'users', (album?.user | async)?.id.toString()]">{{ (album?.user | async)?.username }}</a></div>
+            <div><strong>Author: </strong> <a [routerLink]="['/', 'examples', 'users', (album?.user | async)?.id.toString()]">{{ (album?.user | async)?.username }}</a></div>
           </div>
         </div>
       </div>

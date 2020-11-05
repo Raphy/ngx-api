@@ -3,21 +3,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { of, Subscription, zip } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Post } from '../../resources/post';
+import { User } from '../../../resources/user';
 
 @Component({
-  selector: 'app-post-view',
-  templateUrl: './post-view.component.html',
+  selector: 'app-user-view',
+  templateUrl: './user-view.component.html',
 })
-export class PostViewComponent implements OnInit, OnDestroy {
+export class UserViewComponent implements OnInit, OnDestroy {
   activateTabId: string;
 
-  post: Post;
+  user: User;
 
   subscription: Subscription;
 
   constructor(
-    @Inject(ResourceServiceTokenFor(Post)) private postApiService: ResourceService<Post>,
+    @Inject(ResourceServiceTokenFor(User)) private userApiService: ResourceService<User>,
     private activatedRoute: ActivatedRoute,
     private router: Router,
   ) {
@@ -32,18 +32,14 @@ export class PostViewComponent implements OnInit, OnDestroy {
         switchMap(([params, fragment]) => {
           this.activateTabId = fragment;
 
-          if (params.hasOwnProperty('post')) {
-            return this.postApiService.getResource(params.post);
+          if (params.hasOwnProperty('user')) {
+            return this.userApiService.getResource(params.user);
           }
 
           return of(null);
         }),
       )
-      .subscribe((post: Post) => {
-        this.post = post;
-
-        this.postApiService.persist(post).subscribe();
-      });
+      .subscribe((user: User) => this.user = user);
   }
 
   ngOnDestroy(): void {

@@ -1,0 +1,16 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col-12 col-md-3 col-xl-2">
+
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'examples', 'users']" [class.active]="router.isActive('/examples/users', false)">Users</a>
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'examples', 'posts']" [class.active]="router.isActive('/examples/posts', false)">Posts</a>
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'examples', 'albums']" [class.active]="router.isActive('/examples/albums', false)">Albums</a>
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'examples', 'todos']" [class.active]="router.isActive('/examples/todos', false)">Todos</a>
+      </div>
+
+    </div>
+
+    <div class="col"><router-outlet></router-outlet></div>
+  </div>
+</div>

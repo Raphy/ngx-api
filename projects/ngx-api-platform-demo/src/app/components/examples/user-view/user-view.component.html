@@ -1,11 +1,3 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
-    <li class="breadcrumb-item"><a [routerLink]="['/', 'users']">Users</a></li>
-    <li class="breadcrumb-item active">{{ user?.username }}</li>
-  </ol>
-</nav>
-
 <div class="container">
   <div class="row">
     <div class="col">
@@ -42,7 +34,7 @@
                 <th scope="row">{{ post.id }}</th>
                 <td>{{ post.title }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'posts', post.id.toString()]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'posts', post.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>
@@ -70,7 +62,7 @@
                 <th scope="row">{{ album.id }}</th>
                 <td>{{ album.title }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'albums', album.id.toString()]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'albums', album.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>
@@ -100,7 +92,7 @@
                 <td>{{ todo.title }}</td>
                 <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
                 <td>
-                  <a class="btn btn-primary" [routerLink]="['/', 'todos', todo.id.toString()]">
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'todos', todo.id.toString()]">
                     <fa-icon [icon]="['fas', 'eye']"></fa-icon>
                     View
                   </a>

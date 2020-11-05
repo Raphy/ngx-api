@@ -1,24 +1,24 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ResourceService, ResourceServiceTokenFor } from 'ngx-api-platform';
 import { Subscription } from 'rxjs';
-import { Post } from '../../resources/post';
+import { Album } from '../../../resources/album';
 
 @Component({
-  selector: 'app-post-list',
-  templateUrl: './post-list.component.html',
+  selector: 'app-album-list',
+  templateUrl: './album-list.component.html',
 })
-export class PostListComponent implements OnInit, OnDestroy {
-  posts: Array<Post>;
+export class AlbumListComponent implements OnInit, OnDestroy {
+  albums: Array<Album>;
 
   subscription: Subscription;
 
   constructor(
-    @Inject(ResourceServiceTokenFor(Post)) private postApiService: ResourceService<Post>,
+    @Inject(ResourceServiceTokenFor(Album)) private albumResourceService: ResourceService<Album>,
   ) {
   }
 
   ngOnInit(): void {
-    this.postApiService.getCollection().subscribe((posts: Array<Post>) => this.posts = posts);
+    this.albumResourceService.getCollection().subscribe((albums: Array<Album>) => this.albums = albums);
   }
 
   ngOnDestroy(): void {
