@@ -1,0 +1,31 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col-12 col-md-3 col-xl-2">
+
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'documentation', 'getting-started']" [class.active]="router.isActive('/documentation/getting-started', true)">Getting Started</a>
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'documentation', 'mapping', 'resource']" [class.active]="router.isActive('/documentation/mapping', false)">Mapping</a>
+
+        <div *ngIf="router.isActive('/documentation/mapping', false)" class="list-group-item">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'resource']" [class.active]="router.isActive('/documentation/mapping/resource', true)">Resource</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'property']" [class.active]="router.isActive('/documentation/mapping/property', true)">Property</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'identifier']" [class.active]="router.isActive('/documentation/mapping/identifier', true)">Identifier</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'input']" [class.active]="router.isActive('/documentation/mapping/input', true)">Input</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'output']" [class.active]="router.isActive('/documentation/mapping/output', true)">Output</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'sub-resource']" [class.active]="router.isActive('/documentation/mapping/sub-resource', true)">SubResource</a>
+              <a class="nav-link" [routerLink]="['/', 'documentation', 'mapping', 'sub-collection']" [class.active]="router.isActive('/documentation/mapping/sub-collection', true)">SubCollection</a>
+            </li>
+          </ul>
+        </div>
+
+        <a class="list-group-item list-group-item-action" [routerLink]="['/', 'documentation', 'resource-service']" [class.active]="router.isActive('/documentation/resource-service', true)">Resource Service</a>
+      </div>
+    </div>
+
+    <div class="col">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+      <h1>{{ user?.username }}</h1>
+
+      <div class="card my-3">
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <div class="card-text">
+            <div><strong>Name: </strong> {{ user?.name }}</div>
+            <div><strong>Email: </strong> {{ user?.email }}</div>
+            <div><strong>Phone: </strong> {{ user?.phone }}</div>
+            <div><strong>Website: </strong> {{ user?.website }}</div>
+          </div>
+        </div>
+      </div>
+
+      <ul ngbNav #subCollectionsNav="ngbNav"  [activeId]="activateTabId" (activeIdChange)="updateFragmentForActiveTab($event)" class="nav-tabs">
+        <li ngbNavItem="posts">
+          <a ngbNavLink>Posts</a>
+          <ng-template ngbNavContent>
+
+            <table class="table table-bordered table-hover mt-3">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let post of (user?.posts | async)">
+                <th scope="row">{{ post.id }}</th>
+                <td>{{ post.title }}</td>
+                <td>
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'posts', post.id.toString()]">
+                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                    View
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </ng-template>
+        </li>
+        <li ngbNavItem="albums">
+          <a ngbNavLink>Albums</a>
+          <ng-template ngbNavContent>
+
+            <table class="table table-bordered table-hover mt-3">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let album of (user?.albums | async)">
+                <th scope="row">{{ album.id }}</th>
+                <td>{{ album.title }}</td>
+                <td>
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'albums', album.id.toString()]">
+                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                    View
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </ng-template>
+        </li>
+        <li ngbNavItem="todos">
+          <a ngbNavLink>Todos</a>
+          <ng-template ngbNavContent>
+
+            <table class="table table-bordered table-hover mt-3">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Completed</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let todo of (user?.todos | async)">
+                <th scope="row">{{ todo.id }}</th>
+                <td>{{ todo.title }}</td>
+                <td>{{ todo.completed ? 'Yes' : 'No' }}</td>
+                <td>
+                  <a class="btn btn-primary" [routerLink]="['/', 'examples', 'todos', todo.id.toString()]">
+                    <fa-icon [icon]="['fas', 'eye']"></fa-icon>
+                    View
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="subCollectionsNav"></div>
+    </div>
+  </div>
+</div>
