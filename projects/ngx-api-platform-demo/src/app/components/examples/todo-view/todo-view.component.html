@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+      <h1>{{ todo?.title }}</h1>
+
+      <div class="card my-3">
+        <div class="card-body">
+          <h5 class="card-title">Details</h5>
+          <div class="card-text">
+            <div><strong>Author: </strong> <a [routerLink]="['/', 'examples', 'users', (todo?.user | async)?.id.toString()]">{{ (todo?.user | async)?.username }}</a></div>
+            <div><strong>Completed: </strong> {{ todo?.completed ? 'Yes' : 'No' }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
