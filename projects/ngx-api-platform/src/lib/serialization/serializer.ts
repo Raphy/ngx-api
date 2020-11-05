@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { EMPTY, forkJoin, merge, Observable, of, throwError } from 'rxjs';
-import { map, reduce, switchMap, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { SerializerError } from './errors';
 import { API_PLATFORM_DENORMALIZERS, API_PLATFORM_NORMALIZERS, Denormalizer, Normalizer } from './normalizers';
 
