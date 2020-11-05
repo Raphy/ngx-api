@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { IdentifierMetadata } from '../metadata';
 import { IdentifierOptions } from '../options';
 import { addIdentifierMetadata, getPropertyMetadata } from '../utilities';
@@ -28,7 +27,7 @@ export function Identifier(options?: IdentifierOptions): PropertyDecorator {
     options = options || {};
 
     const metadata: IdentifierMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };

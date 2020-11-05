@@ -1,11 +1,10 @@
-import { Type } from '@angular/core';
 import { ResourceServiceOptions } from '../../resource-service-options';
 
 export interface SubResourceOptions {
   /**
    * The type of the sub resource.
    */
-  type: () => Type<any>;
+  type: () => Function;
 
   /**
    * The options passed to ResourceService::getResource().

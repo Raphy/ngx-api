@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { filter, map, share, switchMap } from 'rxjs/operators';
+import { filter, map, share, switchMap, tap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import {
   IdentifierMetadata,
@@ -88,8 +88,6 @@ export class ResourceService<TResource> {
     options.request.uri = options.request.uri || `/${ this.metadata.resource.options.endpoint }/${ identifier }`;
     options.request.params = options.request.params || new HttpParams();
     options.request.headers = options.request.headers || new HttpHeaders();
-
-    // TODO: handle IRI
 
     const request: HttpRequest<object> = new HttpRequest<object>(
       options.request.method as any,

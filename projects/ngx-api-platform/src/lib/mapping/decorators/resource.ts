@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { ResourceMetadata } from '../metadata';
 import { ResourceOptions } from '../options';
 import { addResourceMetadata } from '../utilities';
@@ -37,7 +36,7 @@ export function Resource(endpointOrOptions: string | ResourceOptions, maybeOptio
     };
 
     const metadata: ResourceMetadata = {
-      target: target as Type<any>,
+      target,
       options,
     };
 

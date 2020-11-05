@@ -13,17 +13,11 @@ export class Serializer implements Denormalizer, Normalizer {
   }
 
   denormalize(value: any, type: Function, context?: object): Observable<any> {
-    context = context || {};
-    context['rootValue'] = context['rootValue'] || value;
-    context['rootType'] = context['rootType'] || type;
-    context['depth'] = (context['depth'] || 0) + 1;
-
     return this.getDenormalizer(value, type)
       .pipe(
         switchMap((denormalizer) => {
-          // If a denormalizer is found, use it
-          if (denormalizer) {
-            return denormalizer.denormalize(value, type, context);
+          if (value.constructor === Array) {
+            return this.denormalizeArray(value, context);
           }
 
           // If the value is a native type, just return it
@@ -31,13 +25,16 @@ export class Serializer implements Denormalizer, Normalizer {
             return of(value);
           }
 
-          if (value.constructor === Array) {
-            return this.denormalizeArray(value, context);
+          // If a denormalizer is found, use it
+          if (denormalizer) {
+            return denormalizer.denormalize(value, type, context);
           }
 
           if (value.constructor === Object) {
             return this.denormalizeObject(value, context);
           }
+
+          console.error(`${ this.constructor.name }::denormalize / Any denormalizer found`, {value, type, context});
 
           return throwError(new SerializerError('Any denormalizer found'));
         }),
@@ -46,13 +43,13 @@ export class Serializer implements Denormalizer, Normalizer {
   }
 
   normalize(value: any, context?: object): Observable<any> {
-    context = context || {};
-    context['rootValue'] = context['rootValue'] || value;
-    context['depth'] = (context['depth'] || 0) + 1;
-
     return this.getNormalizer(value)
       .pipe(
         switchMap((normalizer) => {
+          if (value.constructor === Array) {
+            return this.normalizeArray(value, context);
+          }
+
           // If a normalizer is found, use it
           if (normalizer) {
             return normalizer.normalize(value, context);
@@ -63,14 +60,11 @@ export class Serializer implements Denormalizer, Normalizer {
             return of(value);
           }
 
-          if (value.constructor === Array) {
-            return this.normalizeArray(value, context);
-
-          }
-
           if (value.constructor === Object) {
             return this.normalizeObject(value, context);
           }
+
+          console.error(`${ this.constructor.name }::normalize / Any normalizer found`, {value, context});
 
           return throwError(new SerializerError('Any normalizer found'));
         }),

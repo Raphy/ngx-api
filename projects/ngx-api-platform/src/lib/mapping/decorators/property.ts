@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { PropertyMetadata } from '../metadata';
 import { PropertyOptions } from '../options';
 import { addPropertyMetadata } from '../utilities';
@@ -52,7 +51,7 @@ export function Property(nameOrOptions?: string | PropertyOptions, maybeOptions 
     }
 
     const metadata: PropertyMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };

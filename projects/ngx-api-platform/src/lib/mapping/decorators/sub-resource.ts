@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { SubResourceMetadata } from '../metadata';
 import { SubResourceOptions } from '../options';
 import { addSubResourceMetadata, getPropertyMetadata } from '../utilities';
@@ -10,7 +9,7 @@ import { Property } from './property';
  * @Annotation
  * @publicApi
  */
-export function SubResource(type: () => Type<any>): PropertyDecorator;
+export function SubResource(type: () => Function): PropertyDecorator;
 
 /**
  * Defines a resource sub resource.
@@ -27,14 +26,14 @@ export function SubResource(options: SubResourceOptions): PropertyDecorator;
  * @publicApi
  */
 export function SubResource(
-  type: () => Type<any>,
+  type: () => Function,
   options: Pick<SubResourceOptions, Exclude<keyof SubResourceOptions, 'type'>>,
 ): PropertyDecorator;
 
 /**
  * Defines a resource sub resource.
  */
-export function SubResource(typeOrOptions: (() => Type<any>) | SubResourceOptions, maybeOptions ?: SubResourceOptions): PropertyDecorator {
+export function SubResource(typeOrOptions: (() => Function) | SubResourceOptions, maybeOptions ?: SubResourceOptions): PropertyDecorator {
   return (target: Object, propertyName: string): void => {
     const options: SubResourceOptions = {
       type: (typeof typeOrOptions === 'function' ? typeOrOptions : typeOrOptions.type),
@@ -43,7 +42,7 @@ export function SubResource(typeOrOptions: (() => Type<any>) | SubResourceOption
     options.resourceServiceOptions = options.resourceServiceOptions || {};
 
     const metadata: SubResourceMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };

@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { SubCollectionMetadata } from '../metadata';
 import { SubCollectionOptions } from '../options';
 import { addSubCollectionMetadata } from '../utilities';
@@ -9,7 +8,7 @@ import { addSubCollectionMetadata } from '../utilities';
  * @Annotation
  * @publicApi
  */
-export function SubCollection(type: () => Type<any>): PropertyDecorator;
+export function SubCollection(type: () => Function): PropertyDecorator;
 
 /**
  * Defines a resource sub collection.
@@ -26,7 +25,7 @@ export function SubCollection(options: SubCollectionOptions): PropertyDecorator;
  * @publicApi
  */
 export function SubCollection(
-  type: () => Type<any>,
+  type: () => Function,
   options: Pick<SubCollectionOptions, Exclude<keyof SubCollectionOptions, 'type'>>,
 ): PropertyDecorator;
 
@@ -34,7 +33,7 @@ export function SubCollection(
  * Defines a resource sub collection.
  */
 export function SubCollection(
-  typeOrOptions: (() => Type<any>) | SubCollectionOptions,
+  typeOrOptions: (() => Function) | SubCollectionOptions,
   maybeOptions ?: SubCollectionOptions,
 ): PropertyDecorator {
   return (target: Object, propertyName: string): void => {
@@ -44,7 +43,7 @@ export function SubCollection(
     Object.assign(options, maybeOptions || {});
 
     const metadata: SubCollectionMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };

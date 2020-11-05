@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { InputMetadata } from '../metadata';
 import { InputOptions } from '../options';
 import { addInputMetadata, getPropertyMetadata } from '../utilities';
@@ -28,7 +27,7 @@ export function Input(options?: InputOptions): PropertyDecorator {
     options = options || {};
 
     const metadata: InputMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };

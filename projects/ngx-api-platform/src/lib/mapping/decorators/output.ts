@@ -1,4 +1,3 @@
-import { Type } from '@angular/core';
 import { OutputMetadata } from '../metadata';
 import { OutputOptions } from '../options';
 import { addOutputMetadata, getPropertyMetadata } from '../utilities';
@@ -28,7 +27,7 @@ export function Output(options?: OutputOptions): PropertyDecorator {
     options = options || {};
 
     const metadata: OutputMetadata = {
-      target: target.constructor as Type<any>,
+      target: target.constructor,
       propertyName,
       options,
     };
