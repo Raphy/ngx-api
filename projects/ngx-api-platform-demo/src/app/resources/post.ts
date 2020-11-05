@@ -1,24 +1,34 @@
-import * as API from 'ngx-api-platform/decorators';
+import { HttpParams } from '@angular/common/http';
+import { Identifier, Input, Output, Property, Resource, SubCollection, SubResource } from 'ngx-api-platform';
 import { Observable } from 'rxjs';
 import { Comment } from './comment';
 import { User } from './user';
 
-@API.Resource('posts')
-export class Post
-{
-  @API.Property({input: false})
+@Resource('posts')
+export class Post {
+  @Identifier()
+  @Output()
   id: number;
 
-  @API.Property()
+  @Input()
+  @Output()
   title: string;
 
-  @API.Property()
-  body: string;
+  @Property('body')
+  @Input()
+  @Output()
+  content: string;
 
-  @API.Property('userId')
-  @API.SubResource(() => User)
+  @Property('userId')
+  @Input()
+  @Output()
+  @SubResource(() => User, {
+    resourceServiceOptions: (resource: Post) => {
+      return ({request: {params: new HttpParams({fromObject: {test: resource.title}})}});
+    }}
+    )
   user: Observable<User>;
 
-  @API.SubCollection(() => Comment)
+  @SubCollection(() => Comment)
   comments: Observable<Array<Comment>>;
 }

@@ -1,24 +1,31 @@
 # NgxApiPlatform
+NgxApiPlatform is an Angular library to ease the API consumption.
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
+# Demo
+A demonstration application is available at https://raphy.github.io/ngx-api-platform/
 
-## Code scaffolding
+# Installation
 
-Run `ng generate component component-name --project ngx-api-platform` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-api-platform`.
-> Note: Don't forget to add `--project ngx-api-platform` or else it will be added to the default project in your `angular.json` file. 
+## With Angular Schematics (Work In Progress)
+Just run the following command:
 
-## Build
+```
+ng add ngx-api-platform
+```
 
-Run `ng build ngx-api-platform` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Manual
+Run the following command:
+```
+yarn add ngx-api-platform
+# or
+npm install ngx-api-platform
+```
 
-## Publishing
+Then import the `ApiPlatformModule` in your `AppModule`:
 
-After building your library with `ng build ngx-api-platform`, go to the dist folder `cd dist/ngx-api-platform` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-api-platform` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+ApiPlatformModule.forRoot({
+  apiBaseUrl: 'https://api.awesome-app.tld', // Set the API base URL where NgxApiPlatfom should request
+  resources: [User, Post, ProfilePhoto], // Set the mapped resources
+})
+```
