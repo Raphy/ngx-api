@@ -16,13 +16,13 @@ export class Serializer implements Denormalizer, Normalizer {
     return this.getDenormalizer(value, type)
       .pipe(
         switchMap((denormalizer) => {
-          if (value.constructor === Array) {
-            return this.denormalizeArray(value, context);
-          }
-
           // If the value is a native type, just return it
           if (Object(value) !== value) {
             return of(value);
+          }
+
+          if (value.constructor === Array) {
+            return this.denormalizeArray(value, type, context);
           }
 
           // If a denormalizer is found, use it
@@ -46,6 +46,11 @@ export class Serializer implements Denormalizer, Normalizer {
     return this.getNormalizer(value)
       .pipe(
         switchMap((normalizer) => {
+          // If the value is a native type, just return it
+          if (Object(value) !== value) {
+            return of(value);
+          }
+
           if (value.constructor === Array) {
             return this.normalizeArray(value, context);
           }
@@ -53,11 +58,6 @@ export class Serializer implements Denormalizer, Normalizer {
           // If a normalizer is found, use it
           if (normalizer) {
             return normalizer.normalize(value, context);
-          }
-
-          // If the value is a native type, just return it
-          if (Object(value) !== value) {
-            return of(value);
           }
 
           if (value.constructor === Object) {
@@ -108,10 +108,10 @@ export class Serializer implements Denormalizer, Normalizer {
       );
   }
 
-  private denormalizeArray(array: Array<any>, context?: object): Observable<Array<any>> {
+  private denormalizeArray(array: Array<any>, type: Function, context?: object): Observable<Array<any>> {
     return array.length === 0
       ? of([])
-      : forkJoin(array.map((item) => this.denormalize(item, item.constructor, context)));
+      : forkJoin(array.map((item) => this.denormalize(item, type, context)));
   }
 
   private denormalizeObject(object: Object, context?: object): Observable<Object> {

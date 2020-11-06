@@ -83,6 +83,7 @@
                   "with": "projects/ngx-api-platform-demo/src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "/ngx-api-platform/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
