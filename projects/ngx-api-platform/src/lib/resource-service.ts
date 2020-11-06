@@ -82,6 +82,11 @@ export class ResourceService<TResource> {
   }
 
   getResource(identifier: string | number, options?: ResourceServiceOptions): Observable<TResource> {
+    // Handle IRI
+    if (typeof identifier === 'string' && identifier.startsWith(`/${ this.metadata.resource.options.endpoint }/`)) {
+      identifier = identifier.substring(`/${ this.metadata.resource.options.endpoint }/`.length);
+    }
+
     options = options || {};
     options.request = options.request || {};
     options.request.method = options.request.method || 'GET';

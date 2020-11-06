@@ -8,9 +8,12 @@ import { Serializer } from '../serializer';
 import {
   getIdentifierMetadata,
   getPropertiesMetadata,
-  getResourceMetadata, getSubCollectionsMetadata,
-  getSubResourceMetadata, getSubResourcesMetadata,
-  PropertyMetadata, SubCollectionMetadata, SubResourceMetadata,
+  getResourceMetadata,
+  getSubCollectionsMetadata,
+  getSubResourceMetadata,
+  PropertyMetadata,
+  SubCollectionMetadata,
+  SubResourceMetadata,
 } from '../../mapping';
 
 @Injectable()
@@ -95,24 +98,29 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
   ): Observable<any> {
     const subResourceResourceMetadata = getResourceMetadata(subResourceMetadata.options.type());
 
-    return of(
-      of(null)
-        .pipe(
-          switchMap(() => {
-            const resourceServiceOptions = typeof subResourceMetadata.options.resourceServiceOptions === 'function'
-              ? subResourceMetadata.options.resourceServiceOptions(resource)
-              : subResourceMetadata.options.resourceServiceOptions || {};
-
-            // Handle IRI
-            if (typeof value === 'string' && value.startsWith(`/${ subResourceResourceMetadata.options.endpoint }/`)) {
-              value = value.substring(`/${ subResourceResourceMetadata.options.endpoint }/`.length);
-            }
-
-            return this.getResourceService(subResourceMetadata.options.type()).getResource(value, resourceServiceOptions);
-          }),
-        ),
-    )
+    return of(null)
       .pipe(
+        map(() => {
+          if (!value) {
+            return null;
+          }
+
+          return of(null)
+            .pipe(
+              switchMap(() => {
+                const resourceServiceOptions = Object.assign({}, typeof subResourceMetadata.options.resourceServiceOptions === 'function'
+                  ? subResourceMetadata.options.resourceServiceOptions(resource)
+                  : subResourceMetadata.options.resourceServiceOptions || {});
+
+                // Handle IRI
+                if (typeof value === 'string' && value.startsWith(`/${ subResourceResourceMetadata.options.endpoint }/`)) {
+                  value = value.substring(`/${ subResourceResourceMetadata.options.endpoint }/`.length);
+                }
+
+                return this.getResourceService(subResourceMetadata.options.type()).getResource(value, resourceServiceOptions);
+              }),
+            );
+        }),
         tap((denormalizedValue) => {
           resource[propertyMetadata.propertyName] = denormalizedValue;
         }),
@@ -129,19 +137,17 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             resource[subCollectionMetadata.propertyName] = of(null)
               .pipe(
                 switchMap(() => {
-                  const resourceServiceOptions = typeof subCollectionMetadata.options.resourceServiceOptions === 'function'
+                  const resourceServiceOptions = Object.assign({}, typeof subCollectionMetadata.options.resourceServiceOptions === 'function'
                     ? subCollectionMetadata.options.resourceServiceOptions(resource)
-                    : subCollectionMetadata.options.resourceServiceOptions || {};
+                    : subCollectionMetadata.options.resourceServiceOptions || {});
 
                   resourceServiceOptions.request = resourceServiceOptions.request || {};
                   if (!resourceServiceOptions.request.uri) {
                     const resourceMetadata = getResourceMetadata(resource.constructor);
                     const identifierMetadata = getIdentifierMetadata(resource.constructor);
-                    const subCollectionResourceMetadata = getResourceMetadata(subCollectionMetadata.options.type());
                     const resourceEndpoint = resourceMetadata.options.endpoint;
                     const resourceIdentifier = resource[identifierMetadata.propertyName];
-                    const subResourceEndpoint = subCollectionResourceMetadata.options.endpoint;
-                    resourceServiceOptions.request.uri = `/${ resourceEndpoint }/${ resourceIdentifier }/${ subResourceEndpoint }`;
+                    resourceServiceOptions.request.uri = `/${ resourceEndpoint }/${ resourceIdentifier }/${ subCollectionMetadata.propertyName }`;
                   }
 
                   return this.getResourceService(subCollectionMetadata.options.type()).getCollection(resourceServiceOptions);
