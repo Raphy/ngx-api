@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, InjectionToken, Injector } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { filter, map, share, switchMap, tap } from 'rxjs/operators';
+import { filter, map, mapTo, share, shareReplay, switchMap } from 'rxjs/operators';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
 import {
   IdentifierMetadata,
@@ -87,19 +87,19 @@ export class ResourceService<TResource> {
       identifier = identifier.substring(`/${ this.metadata.resource.options.endpoint }/`.length);
     }
 
-    options = options || {};
-    options.request = options.request || {};
-    options.request.method = options.request.method || 'GET';
-    options.request.uri = options.request.uri || `/${ this.metadata.resource.options.endpoint }/${ identifier }`;
-    options.request.params = options.request.params || new HttpParams();
-    options.request.headers = options.request.headers || new HttpHeaders();
+    const finalOptions = Object.assign({}, options || {});
+    finalOptions.request = finalOptions.request || {};
+    finalOptions.request.method = finalOptions.request.method || 'GET';
+    finalOptions.request.uri = finalOptions.request.uri || `/${ this.metadata.resource.options.endpoint }/${ identifier }`;
+    finalOptions.request.params = finalOptions.request.params || new HttpParams();
+    finalOptions.request.headers = finalOptions.request.headers || new HttpHeaders();
 
     const request: HttpRequest<object> = new HttpRequest<object>(
-      options.request.method as any,
-      `${ this.config.apiBaseUrl }${ options.request.uri }`,
+      finalOptions.request.method as any,
+      `${ this.config.apiBaseUrl }${ finalOptions.request.uri }`,
       {
-        params: options.request.params,
-        headers: options.request.headers,
+        params: finalOptions.request.params,
+        headers: finalOptions.request.headers,
       },
     );
 
@@ -107,26 +107,25 @@ export class ResourceService<TResource> {
       .pipe(
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
         map((response: HttpResponse<any>) => response.body),
-        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function)),
+        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function, {direction: 'output'})),
         share(),
-      )
-      ;
+      );
   }
 
   getCollection(options?: ResourceServiceOptions): Observable<any> {
-    options = options || {};
-    options.request = options.request || {};
-    options.request.method = options.request.method || 'GET';
-    options.request.uri = options.request.uri || `/${ this.metadata.resource.options.endpoint }`;
-    options.request.params = options.request.params || new HttpParams();
-    options.request.headers = options.request.headers || new HttpHeaders();
+    const finalOptions = Object.assign({}, options || {});
+    finalOptions.request = finalOptions.request || {};
+    finalOptions.request.method = finalOptions.request.method || 'GET';
+    finalOptions.request.uri = finalOptions.request.uri || `/${ this.metadata.resource.options.endpoint }`;
+    finalOptions.request.params = finalOptions.request.params || new HttpParams();
+    finalOptions.request.headers = finalOptions.request.headers || new HttpHeaders();
 
     const request: HttpRequest<object> = new HttpRequest<object>(
-      options.request.method as any,
-      `${ this.config.apiBaseUrl }${ options.request.uri }`,
+      finalOptions.request.method as any,
+      `${ this.config.apiBaseUrl }${ finalOptions.request.uri }`,
       {
-        params: options.request.params,
-        headers: options.request.headers,
+        params: finalOptions.request.params,
+        headers: finalOptions.request.headers,
       },
     );
 
@@ -134,17 +133,81 @@ export class ResourceService<TResource> {
       .pipe(
         filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
         map((response: HttpResponse<any>) => response.body),
-        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function)),
+        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function, {direction: 'output'})),
         share(),
-      )
-      ;
+      );
   }
 
   persist(resource: TResource, options?: ResourceServiceOptions): Observable<TResource> {
-    return of(null);
+    return this.serializer.normalize(resource, {direction: 'input'})
+      .pipe(
+        switchMap((body) => {
+          const identifierMetadata = getIdentifierMetadata(resource.constructor);
+          let identifier: string = resource[identifierMetadata.propertyName];
+
+          // Handle IRI
+          if (typeof identifier === 'string' && identifier.startsWith(`/${ this.metadata.resource.options.endpoint }/`)) {
+            identifier = identifier.substring(`/${ this.metadata.resource.options.endpoint }/`.length);
+          }
+
+          const finalOptions = Object.assign({}, options || {});
+          finalOptions.request = finalOptions.request || {};
+          finalOptions.request.method = finalOptions.request.method || (identifier ? 'PUT' : 'POST');
+          finalOptions.request.uri = finalOptions.request.uri || (
+            identifier ? `/${ this.metadata.resource.options.endpoint }/${ identifier }` : `/${ this.metadata.resource.options.endpoint }`
+          );
+          finalOptions.request.params = finalOptions.request.params || new HttpParams();
+          finalOptions.request.headers = finalOptions.request.headers || new HttpHeaders();
+
+          const request: HttpRequest<object> = new HttpRequest<object>(
+            finalOptions.request.method as any,
+            `${ this.config.apiBaseUrl }${ finalOptions.request.uri }`,
+            body,
+            {
+              params: finalOptions.request.params,
+              headers: finalOptions.request.headers,
+            },
+          );
+
+          return this.httpClient.request(request);
+        }),
+        filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+        map((response: HttpResponse<any>) => response.body),
+        switchMap((body: object) => this.serializer.denormalize(body, this.target as Function, {direction: 'output'})),
+        share(),
+      );
   }
 
   delete(resource: TResource, options?: ResourceServiceOptions): Observable<void> {
-    return of(null);
+    const identifierMetadata = getIdentifierMetadata(resource.constructor);
+    let identifier: string = resource[identifierMetadata.propertyName];
+
+    // Handle IRI
+    if (typeof identifier === 'string' && identifier.startsWith(`/${ this.metadata.resource.options.endpoint }/`)) {
+      identifier = identifier.substring(`/${ this.metadata.resource.options.endpoint }/`.length);
+    }
+
+    const finalOptions = Object.assign({}, options || {});
+    finalOptions.request = finalOptions.request || {};
+    finalOptions.request.method = finalOptions.request.method || 'DELETE';
+    finalOptions.request.uri = finalOptions.request.uri || `/${ this.metadata.resource.options.endpoint }/${ identifier }`;
+    finalOptions.request.params = finalOptions.request.params || new HttpParams();
+    finalOptions.request.headers = finalOptions.request.headers || new HttpHeaders();
+
+    const request: HttpRequest<object> = new HttpRequest<object>(
+      finalOptions.request.method as any,
+      `${ this.config.apiBaseUrl }${ finalOptions.request.uri }`,
+      {
+        params: finalOptions.request.params,
+        headers: finalOptions.request.headers,
+      },
+    );
+
+    return this.httpClient.request(request)
+      .pipe(
+        filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+        mapTo(null),
+        share(),
+      );
   }
 }

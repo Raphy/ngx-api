@@ -1,4 +1,4 @@
-import { InjectionToken, Type } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 
 export const API_PLATFORM_CONFIG: InjectionToken<ApiPlatformConfig> = new InjectionToken<ApiPlatformConfig>('API_PLATFORM_CONFIG');
 
@@ -11,7 +11,7 @@ export interface ApiPlatformConfig {
   /**
    * The list of resources class to use.
    */
-  resources: Array<Function>;
+  resources?: Array<Function>;
 
   /**
    * The resource mapping validation is used for development purposes only.

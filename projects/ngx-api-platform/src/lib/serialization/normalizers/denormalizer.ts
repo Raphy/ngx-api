@@ -13,4 +13,9 @@ export interface Denormalizer {
    * Checks if this denormalizer supports denormalizing the given value
    */
   supportsDenormalization(value: any, type: Function): Observable<boolean>;
+
+  /**
+   * Gets the denormalization order.
+   */
+  getDenormalizationOrder(): number;
 }

@@ -1,23 +1,28 @@
 import { Inject, Injectable } from '@angular/core';
 import { forkJoin, Observable, of, throwError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, mapTo, switchMap } from 'rxjs/operators';
 import { SerializerError } from './errors';
 import { API_PLATFORM_DENORMALIZERS, API_PLATFORM_NORMALIZERS, Denormalizer, Normalizer } from './normalizers';
 
 @Injectable()
 export class Serializer implements Denormalizer, Normalizer {
+  private normalizers: Array<Normalizer>;
+
+  private denormalizers: Array<Denormalizer>;
+
   constructor(
-    @Inject(API_PLATFORM_NORMALIZERS) private normalizers: Array<Normalizer>,
-    @Inject(API_PLATFORM_DENORMALIZERS) private denormalizers: Array<Denormalizer>,
+    @Inject(API_PLATFORM_NORMALIZERS) normalizers: Array<Normalizer>,
+    @Inject(API_PLATFORM_DENORMALIZERS) denormalizers: Array<Denormalizer>,
   ) {
+    this.normalizers = normalizers.sort((n1, n2) => n1.getNormalizationOrder() - n2.getNormalizationOrder());
+    this.denormalizers = denormalizers.sort((dn1, dn2) => dn1.getDenormalizationOrder() - dn2.getDenormalizationOrder());
   }
 
   denormalize(value: any, type: Function, context?: object): Observable<any> {
     return this.getDenormalizer(value, type)
       .pipe(
         switchMap((denormalizer) => {
-          // If the value is a native type, just return it
-          if (Object(value) !== value) {
+          if (!value) {
             return of(value);
           }
 
@@ -28,6 +33,11 @@ export class Serializer implements Denormalizer, Normalizer {
           // If a denormalizer is found, use it
           if (denormalizer) {
             return denormalizer.denormalize(value, type, context);
+          }
+
+          // If the value is a native type, just return it
+          if (Object(value) !== value) {
+            return of(value);
           }
 
           if (value.constructor === Object) {
@@ -46,8 +56,7 @@ export class Serializer implements Denormalizer, Normalizer {
     return this.getNormalizer(value)
       .pipe(
         switchMap((normalizer) => {
-          // If the value is a native type, just return it
-          if (Object(value) !== value) {
+          if (!value) {
             return of(value);
           }
 
@@ -58,6 +67,11 @@ export class Serializer implements Denormalizer, Normalizer {
           // If a normalizer is found, use it
           if (normalizer) {
             return normalizer.normalize(value, context);
+          }
+
+          // If the value is a native type, just return it
+          if (Object(value) !== value) {
+            return of(value);
           }
 
           if (value.constructor === Object) {
@@ -80,17 +94,27 @@ export class Serializer implements Denormalizer, Normalizer {
     return this.getNormalizer(value).pipe(map((normalizer) => !!normalizer));
   }
 
+  getDenormalizationOrder(): number {
+    return 0;
+  }
+
+  getNormalizationOrder(): number {
+    return 0;
+  }
+
   private getDenormalizer(value: any, type: Function): Observable<Denormalizer> {
     return of(this.denormalizers)
       .pipe(
         switchMap(
-          (denormalizers) => forkJoin(
+          (denormalizers: Array<Denormalizer>) => forkJoin(
             denormalizers.map(
               (denormalizer) => denormalizer.supportsDenormalization(value, type).pipe(map((supports) => supports ? denormalizer : null)),
             ),
           ),
         ),
-        map((denormalizers) => denormalizers.reduce((acc, curr) => curr || acc, null)),
+        map((denormalizers: Array<Denormalizer>) => denormalizers.filter((denormalizer) => !!denormalizer)),
+        map((denormalizers: Array<Denormalizer>) => denormalizers.sort((d1, d2) => d1.getDenormalizationOrder() - d2.getDenormalizationOrder())),
+        map((denormalizers: Array<Denormalizer>) => denormalizers.shift()),
       );
   }
 
@@ -98,13 +122,15 @@ export class Serializer implements Denormalizer, Normalizer {
     return of(this.normalizers)
       .pipe(
         switchMap(
-          (normalizers) => forkJoin(
+          (normalizers: Array<Normalizer>) => forkJoin(
             normalizers.map(
               (normalizer) => normalizer.supportsNormalization(value).pipe(map((supports) => supports ? normalizer : null)),
             ),
           ),
         ),
-        map((normalizers) => normalizers.reduce((acc, curr) => curr || acc, null)),
+        map((normalizers: Array<Normalizer>) => normalizers.filter((normalizer) => !!normalizer)),
+        map((normalizers: Array<Normalizer>) => normalizers.sort((n1, n2) => n1.getNormalizationOrder() - n2.getNormalizationOrder())),
+        map((normalizers: Array<Normalizer>) => normalizers.shift()),
       );
   }
 
@@ -124,7 +150,7 @@ export class Serializer implements Denormalizer, Normalizer {
         (propertyName) => this.denormalize(object[propertyName], object[propertyName].constructor, context)
           .pipe(map((denormalizedValue) => denormalizedObject[propertyName] = denormalizedValue)),
       ))
-        .pipe(map(() => denormalizedObject))
+        .pipe(mapTo(denormalizedObject))
       ;
   }
 
@@ -144,7 +170,7 @@ export class Serializer implements Denormalizer, Normalizer {
         (propertyName) => this.normalize(object[propertyName], context)
           .pipe(map((normalizedValue) => normalizedObject[propertyName] = normalizedValue)),
       ))
-        .pipe(map(() => normalizedObject))
+        .pipe(mapTo(normalizedObject))
       ;
   }
 }

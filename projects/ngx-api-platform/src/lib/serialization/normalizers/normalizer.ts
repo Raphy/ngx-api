@@ -13,4 +13,9 @@ export interface Normalizer {
    * Checks if this normalizer supports normalizing the given value
    */
   supportsNormalization(value: any): Observable<boolean>;
+
+  /**
+   * Gets the normalization order.
+   */
+  getNormalizationOrder(): number;
 }

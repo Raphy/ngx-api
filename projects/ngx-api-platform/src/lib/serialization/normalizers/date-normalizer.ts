@@ -25,4 +25,12 @@ export class DateNormalizer implements Denormalizer, Normalizer {
   supportsNormalization(value: any): Observable<boolean> {
     return of(!!value && typeof value === 'object' && value.constructor === Date);
   }
+
+  getDenormalizationOrder(): number {
+    return 0;
+  }
+
+  getNormalizationOrder(): number {
+    return 0;
+  }
 }

@@ -1,12 +1,14 @@
 import { Injectable, Injector } from '@angular/core';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, mapTo, switchMap, tap } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
-import { ResourceService, ResourceServiceTokenFor } from '../../resource-service';
+import { ResourceService } from '../../resource-service';
 import { Denormalizer } from './denormalizer';
 import { Normalizer } from './normalizer';
 import { Serializer } from '../serializer';
 import {
   getIdentifierMetadata,
+  getInputMetadata,
+  getOutputMetadata,
   getPropertiesMetadata,
   getResourceMetadata,
   getSubCollectionsMetadata,
@@ -50,6 +52,14 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
     return of(!!value && typeof value === 'object' && !!getResourceMetadata(value.constructor));
   }
 
+  getDenormalizationOrder(): number {
+    return 0;
+  }
+
+  getNormalizationOrder(): number {
+    return 0;
+  }
+
   private denormalizeProperties(resource: Object, value: object, context?: object): Observable<Object> {
     return of(getPropertiesMetadata(resource.constructor))
       .pipe(
@@ -58,6 +68,9 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             return of(resource);
           }
 
+          if (context && context.hasOwnProperty('direction') && context['direction'] === 'output') {
+            propertiesMetadata = propertiesMetadata.filter((pm) => getOutputMetadata(pm.target, pm.propertyName));
+          }
 
           return forkJoin(propertiesMetadata.map((propertyMetadata) => {
             const subResourceMetadata = getSubResourceMetadata(resource.constructor, propertyMetadata.propertyName);
@@ -78,7 +91,7 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             );
           }));
         }),
-        map(() => resource),
+        mapTo(resource),
       )
       ;
   }
@@ -105,19 +118,27 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             return null;
           }
 
+          if (typeof value === 'object' && value.constructor === subResourceMetadata.target) {
+            return of(value);
+          }
+
           return of(null)
             .pipe(
               switchMap(() => {
                 const resourceServiceOptions = Object.assign({}, typeof subResourceMetadata.options.resourceServiceOptions === 'function'
                   ? subResourceMetadata.options.resourceServiceOptions(resource)
-                  : subResourceMetadata.options.resourceServiceOptions || {});
+                  : (subResourceMetadata.options.resourceServiceOptions || {}));
 
+                let identifier = value;
                 // Handle IRI
                 if (typeof value === 'string' && value.startsWith(`/${ subResourceResourceMetadata.options.endpoint }/`)) {
-                  value = value.substring(`/${ subResourceResourceMetadata.options.endpoint }/`.length);
+                  identifier = value.substring(`/${ subResourceResourceMetadata.options.endpoint }/`.length);
+                } else if (typeof value === 'object' && !!getResourceMetadata(value)) {
+                  const identifierMetadata = getIdentifierMetadata(value);
+                  identifier = value[identifierMetadata.propertyName];
                 }
 
-                return this.getResourceService(subResourceMetadata.options.type()).getResource(value, resourceServiceOptions);
+                return this.getResourceService(subResourceMetadata.options.type()).getResource(identifier, resourceServiceOptions);
               }),
             );
         }),
@@ -139,9 +160,9 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
                 switchMap(() => {
                   const resourceServiceOptions = Object.assign({}, typeof subCollectionMetadata.options.resourceServiceOptions === 'function'
                     ? subCollectionMetadata.options.resourceServiceOptions(resource)
-                    : subCollectionMetadata.options.resourceServiceOptions || {});
+                    : (subCollectionMetadata.options.resourceServiceOptions || {}));
 
-                  resourceServiceOptions.request = resourceServiceOptions.request || {};
+                  resourceServiceOptions.request = Object.assign({}, resourceServiceOptions.request || {});
                   if (!resourceServiceOptions.request.uri) {
                     const resourceMetadata = getResourceMetadata(resource.constructor);
                     const identifierMetadata = getIdentifierMetadata(resource.constructor);
@@ -155,7 +176,7 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
               );
           });
         }),
-        map(() => resource),
+        mapTo(resource),
       );
   }
 
@@ -167,6 +188,10 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             return of(object);
           }
 
+          if (context && context.hasOwnProperty('direction') && context['direction'] === 'input') {
+            propertiesMetadata = propertiesMetadata.filter((pm) => getInputMetadata(pm.target, pm.propertyName));
+          }
+
           return forkJoin(propertiesMetadata.map((propertyMetadata) => {
             const subResourceMetadata = getSubResourceMetadata(value.constructor, propertyMetadata.propertyName);
             if (subResourceMetadata) {
@@ -176,7 +201,7 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
             return this.normalizeRegularProperty(object, value[propertyMetadata.propertyName], propertyMetadata, context);
           }));
         }),
-        map(() => object),
+        mapTo(object),
       )
       ;
   }
@@ -198,6 +223,6 @@ export class ResourceNormalizer implements Denormalizer, Normalizer {
   }
 
   private getResourceService(type: Function): ResourceService<any> {
-    return this.injector.get<ResourceService<any>>(ResourceServiceTokenFor(type));
+    return new ResourceService<any>(type, this.injector);
   }
 }

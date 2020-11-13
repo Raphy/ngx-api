@@ -1,4 +1,3 @@
-import { HttpClientModule } from '@angular/common/http';
 import { Injector, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import 'reflect-metadata';
 import { API_PLATFORM_CONFIG, ApiPlatformConfig } from './api-platform-config';
@@ -31,25 +30,22 @@ const SerializationDenormalizerProviders = [
   },
 ];
 
+function createResourceServiceProviders(resources: Array<Function>): Array<Provider> {
+  return (resources || []).map((type: Function): Provider => ({
+    provide: ResourceServiceTokenFor(type),
+    useFactory: resourceServiceFactory(type),
+    deps: [Injector],
+  }));
+}
+
 // @dynamic
 @NgModule({
   declarations: [],
-  imports: [
-    HttpClientModule,
-  ],
-  providers: [
-    {
-      provide: Serializer,
-    },
-    ...SerializationDenormalizerProviders,
-    ...SerializationNormalizerProviders,
-  ],
+  imports: [],
   exports: [],
 })
 export class ApiPlatformModule {
-  static forRoot(
-    config: ApiPlatformConfig,
-  ): ModuleWithProviders<ApiPlatformModule> {
+  static forRoot(config: ApiPlatformConfig): ModuleWithProviders<ApiPlatformModule> {
     config.resourceMappingValidation = config.resourceMappingValidation === undefined ? 'enabled' : 'disabled';
 
     return {
@@ -59,11 +55,21 @@ export class ApiPlatformModule {
           provide: API_PLATFORM_CONFIG,
           useValue: config,
         },
-        config.resources.map(<TResource>(type: Function): Provider => ({
-          provide: ResourceServiceTokenFor<TResource>(type),
-          useFactory: resourceServiceFactory<TResource>(type),
-          deps: [Injector],
-        })),
+        {
+          provide: Serializer,
+        },
+        ...SerializationDenormalizerProviders,
+        ...SerializationNormalizerProviders,
+        ...createResourceServiceProviders(config.resources),
+      ],
+    };
+  }
+
+  static forChild(resources: Array<Function>): ModuleWithProviders<ApiPlatformModule> {
+    return {
+      ngModule: ApiPlatformModule,
+      providers: [
+        ...createResourceServiceProviders(resources),
       ],
     };
   }
